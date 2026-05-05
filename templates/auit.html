@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlantis University — IT Programs</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+:root {
+  --bs-primary: #F74E53;
+  --bs-primary-rgb: 247,78,83;
+  --brand-primary-dark: #D24247;
+  --brand-primary-darker: #AD373A;
+  --brand-primary-light: #F97175;
+  --brand-teal: #26C0BB;
+  --brand-teal-dark: #1DA8A4;
+  --bs-link-color: #F74E53;
+  --bs-link-hover-color: #D24247;
+  --bs-focus-ring-color: rgba(247,78,83,.25);
+
+  --surface: #ffffff;
+  --surface2: #f8f9fa;
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.14);
+  --text-primary: #1a1d23;
+  --text-secondary: #5a6070;
+  --text-muted: #8a92a0;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.07);
+
+  --prog-color: #7B5EA7;
+  --prog-light: rgba(123,94,167,0.1);
+  --net-color:  #F74E53;
+  --net-light:  rgba(247,78,83,0.1);
+  --cloud-color:#26C0BB;
+  --cloud-light:rgba(38,192,187,0.1);
+  --db-color:   #E07B39;
+  --db-light:   rgba(224,123,57,0.1);
+  --sec-color:  #2E9E6B;
+  --sec-light:  rgba(46,158,107,0.1);
+
+  --ai-color:   #7C3AED;
+  --ai-dark:    #6D28D9;
+  --ai-light:   rgba(124,58,237,0.09);
+  --ai-border:  rgba(124,58,237,0.22);
+  --ai-glow:    rgba(124,58,237,0.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(247,78,83,0.045) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ─── SCROLL NAVIGATOR ─── */
+#scroll-nav {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 28px;
+  padding: 10px 7px;
+  box-shadow: var(--shadow-md);
+}
+.scroll-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface2);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+  font-size: 13px;
+  user-select: none;
+  outline: none;
+}
+.scroll-btn:hover {
+  background: var(--bs-primary); border-color: var(--bs-primary);
+  color: #fff; box-shadow: 0 4px 14px rgba(247,78,83,0.35);
+  transform: scale(1.1);
+}
+.scroll-btn:active { transform: scale(0.95); }
+.scroll-progress-wrap {
+  width: 2px; height: 30px; background: var(--border);
+  border-radius: 2px; overflow: hidden;
+}
+.scroll-progress-fill {
+  width: 100%; height: 0%;
+  background: linear-gradient(to bottom, var(--bs-primary), var(--brand-teal));
+  border-radius: 2px;
+  transition: height 0.12s linear;
+}
+.scroll-dots { display: flex; flex-direction: column; gap: 6px; padding: 2px 0; }
+.scroll-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--border-strong); cursor: pointer;
+  transition: all 0.25s; flex-shrink: 0;
+}
+.scroll-dot.active { background: var(--bs-primary); transform: scale(1.4); }
+.scroll-dot:hover  { background: var(--brand-primary-light); transform: scale(1.25); }
+
+/* ─── LAYOUT ─── */
+.wrap { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 0 2rem 0 2rem; }
+
+/* ─── HEADER ─── */
+header { padding: 3.5rem 0 0; text-align: center; }
+.au-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: rgba(247,78,83,0.07); border: 1.5px solid rgba(247,78,83,0.22);
+  border-radius: 99px; padding: 7px 20px; margin-bottom: 1.8rem;
+}
+.au-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bs-primary); flex-shrink: 0; }
+.au-badge span { font-size: 11px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--bs-primary); font-weight: 600; }
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.3rem);
+  font-weight: 800; line-height: 1.08; letter-spacing: -0.025em;
+  color: var(--text-primary); margin-bottom: 1rem;
+}
+h1 em     { font-style: normal; color: var(--brand-teal); }
+h1 strong { color: var(--bs-primary); font-weight: 800; }
+.subtitle {
+  font-size: 1rem; color: var(--text-secondary);
+  max-width: 520px; margin: 0 auto 2.5rem; line-height: 1.75;
+}
+
+/* ─── DEGREE TABS ─── */
+.degree-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 2.5rem; flex-wrap: wrap; }
+.deg-tab {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 22px; border-radius: 99px; cursor: pointer;
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface);
+  font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
+  color: var(--text-secondary); transition: all 0.25s;
+  user-select: none; box-shadow: var(--shadow-sm);
+}
+.deg-tab:hover { border-color: var(--bs-primary); color: var(--bs-primary); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.deg-tab.active { color: #fff; border-color: transparent; box-shadow: var(--shadow-md); }
+.deg-tab.active.assoc { background: var(--brand-teal); }
+.deg-tab.active.bach  { background: var(--bs-primary); }
+.deg-tab.active.both  { background: linear-gradient(135deg, var(--bs-primary), var(--brand-teal)); }
+.deg-tab-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.assoc-dot { background: var(--brand-teal); }
+.bach-dot  { background: var(--bs-primary); }
+.both-dot  { background: linear-gradient(135deg, var(--bs-primary), var(--brand-teal)); }
+.deg-tab.active .deg-tab-dot { background: rgba(255,255,255,0.55); }
+
+/* ─── SECTIONS ─── */
+.degree-section { display: none; }
+.degree-section.visible { display: block; }
+.degree-label {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 12px;
+}
+.degree-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ─── CARDS ─── */
+.ka-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(285px, 1fr)); gap: 16px; margin-bottom: 2rem; }
+.ka-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 18px; padding: 24px; cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  position: relative; overflow: hidden; box-shadow: var(--shadow-sm);
+}
+.ka-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  border-radius: 18px 18px 0 0; opacity: 0; transition: opacity 0.3s;
+}
+.ka-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.ka-card.open { box-shadow: var(--shadow-lg); }
+.ka-card.open::before { opacity: 1; }
+.ka-prog::before { background: var(--prog-color); }
+.ka-prog.open  { border-color: rgba(123,94,167,0.3); }
+.ka-net::before  { background: var(--net-color); }
+.ka-net.open   { border-color: rgba(247,78,83,0.3); }
+.ka-cloud::before{ background: var(--cloud-color); }
+.ka-cloud.open { border-color: rgba(38,192,187,0.3); }
+.ka-db::before   { background: var(--db-color); }
+.ka-db.open    { border-color: rgba(224,123,57,0.3); }
+.ka-sec::before  { background: var(--sec-color); }
+.ka-sec.open   { border-color: rgba(46,158,107,0.3); }
+
+.ka-icon { width: 46px; height: 46px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 15px; }
+.ka-prog .ka-icon { background: var(--prog-light); }
+.ka-net .ka-icon  { background: var(--net-light);  }
+.ka-cloud .ka-icon{ background: var(--cloud-light); }
+.ka-db .ka-icon   { background: var(--db-light);   }
+.ka-sec .ka-icon  { background: var(--sec-light);  }
+
+.ka-name { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 5px; letter-spacing: -0.01em; color: var(--text-primary); }
+.ka-tagline { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.55; }
+
+.cert-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 16px; }
+.cert-pill { font-size: 10px; font-weight: 500; padding: 3px 10px; border-radius: 99px; border: 1px solid; letter-spacing: 0.02em; }
+.ka-prog .cert-pill { color: var(--prog-color); border-color: rgba(123,94,167,0.28); background: rgba(123,94,167,0.06); }
+.ka-net .cert-pill  { color: var(--net-color);  border-color: rgba(247,78,83,0.28);  background: rgba(247,78,83,0.05); }
+.ka-cloud .cert-pill{ color: var(--cloud-color);border-color: rgba(38,192,187,0.28); background: rgba(38,192,187,0.05); }
+.ka-db .cert-pill   { color: var(--db-color);   border-color: rgba(224,123,57,0.28); background: rgba(224,123,57,0.05); }
+.ka-sec .cert-pill  { color: var(--sec-color);  border-color: rgba(46,158,107,0.28); background: rgba(46,158,107,0.05); }
+
+.ka-toggle { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.ka-arrow {
+  width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--border-strong);
+  background: var(--surface2); display: flex; align-items: center; justify-content: center;
+  font-size: 12px; transition: transform 0.3s, background 0.2s, color 0.2s, border-color 0.2s;
+  color: var(--text-muted);
+}
+.ka-card:hover .ka-arrow,
+.ka-card.open .ka-arrow { background: var(--bs-primary); border-color: var(--bs-primary); color: #fff; }
+.ka-card.open .ka-arrow { transform: rotate(180deg); }
+
+.course-list { overflow: hidden; max-height: 0; transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1); }
+.course-list.open { max-height: 700px; }
+.course-divider { height: 1px; background: var(--border); margin: 13px 0; }
+.course-item { display: flex; align-items: flex-start; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.course-item:last-of-type { border-bottom: none; }
+.course-num {
+  font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px; white-space: nowrap; margin-top: 1px;
+  letter-spacing: 0.03em; flex-shrink: 0;
+}
+.ka-prog .course-num { background: var(--prog-light); color: var(--prog-color); }
+.ka-net .course-num  { background: var(--net-light);  color: var(--net-color);  }
+.ka-cloud .course-num{ background: var(--cloud-light);color: var(--cloud-color);}
+.ka-db .course-num   { background: var(--db-light);   color: var(--db-color);   }
+.ka-sec .course-num  { background: var(--sec-light);  color: var(--sec-color);  }
+.course-name { font-size: 13px; color: var(--text-primary); font-weight: 500; line-height: 1.4; }
+.course-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.45; }
+
+.au-cert-block {
+  margin-top: 14px; padding: 12px 14px; border-radius: 12px;
+  background: linear-gradient(135deg, rgba(247,78,83,0.05), rgba(38,192,187,0.05));
+  border: 1px solid rgba(247,78,83,0.14);
+  display: flex; align-items: center; gap: 10px;
+}
+.au-medal { font-size: 22px; }
+.au-cert-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.au-cert-name  { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-top: 1px; }
+
+/* ─── NOTE CARD ─── */
+.note-card {
+  background: linear-gradient(135deg, rgba(38,192,187,0.06), rgba(38,192,187,0.02));
+  border: 1.5px solid rgba(38,192,187,0.2) !important;
+  cursor: default !important; box-shadow: var(--shadow-sm) !important;
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: center; text-align: center; padding: 32px 24px; min-height: 200px;
+}
+.note-card:hover { transform: none !important; }
+
+/* ─── OUTCOME BANNER ─── */
+.outcome-banner {
+  margin: 1rem 0 3rem; background: var(--surface);
+  border: 1.5px solid var(--border); border-radius: 20px;
+  padding: 28px 32px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center;
+  box-shadow: var(--shadow-md); position: relative; overflow: hidden;
+}
+.outcome-banner::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--bs-primary), var(--brand-teal));
+}
+.outcome-stat { flex: 1; min-width: 100px; text-align: center; }
+.outcome-num {
+  font-family: 'Syne', sans-serif; font-size: 2.4rem; font-weight: 800; line-height: 1;
+  background: linear-gradient(135deg, var(--bs-primary), var(--brand-teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.outcome-lbl { font-size: 10px; color: var(--text-muted); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.07em; }
+.outcome-divider { width: 1px; height: 50px; background: var(--border); }
+
+/* ─── TALKING POINTS ─── */
+.talking-section { margin: 0 0 4rem; }
+.section-title { font-family: 'Syne', sans-serif; font-size: 1.35rem; font-weight: 700; margin-bottom: 1.2rem; letter-spacing: -0.01em; color: var(--text-primary); }
+.tp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 12px; }
+.tp-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 18px 20px;
+  box-shadow: var(--shadow-sm); transition: transform 0.2s, box-shadow 0.2s;
+}
+.tp-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.tp-q { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 9px; line-height: 1.4; }
+.tp-q::before { content: '\201C'; color: var(--bs-primary); font-size: 17px; font-family: 'Syne', sans-serif; }
+.tp-q::after  { content: '\201D'; color: var(--bs-primary); font-size: 17px; font-family: 'Syne', sans-serif; }
+.tp-a { font-size: 12px; color: var(--text-secondary); line-height: 1.65; }
+
+
+/* ─── LANGUAGE TOGGLE ─── */
+#lang-toggle {
+  position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
+  z-index: 300; display: flex; align-items: center;
+  background: var(--surface); border: 1.5px solid var(--border-strong);
+  border-radius: 99px; padding: 3px; gap: 2px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+}
+.lang-btn {
+  padding: 5px 16px; border-radius: 99px; border: none;
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all 0.22s; color: var(--text-muted); background: transparent;
+}
+.lang-btn:hover { color: var(--text-primary); }
+.lang-btn.active { background: var(--bs-primary); color: #fff; box-shadow: 0 2px 8px rgba(247,78,83,0.35); }
+
+/* ─── Q&A SECTION ─── */
+.qa-section { margin: 0 0 4rem; }
+.section-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 1.5rem; }
+
+/* ── Category picker (default view) ── */
+.cat-picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; }
+.cat-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 18px; border-radius: 16px; cursor: pointer;
+  background: var(--surface); border: 1.5px solid var(--border);
+  text-align: left; font-family: inherit;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  position: relative; overflow: hidden;
+  width: 100%;
+}
+.cat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: 16px 16px 0 0; opacity: 0; transition: opacity 0.2s;
+}
+.cat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--border-strong); }
+.cat-card:hover::before { opacity: 1; }
+.cat-card .cat-icon {
+  width: 46px; height: 46px; border-radius: 13px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.cat-card .cat-text { flex: 1; min-width: 0; }
+.cat-card .cat-name {
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.02rem;
+  letter-spacing: -0.01em; color: var(--text-primary); margin-bottom: 3px;
+}
+.cat-card .cat-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.cat-card .cat-meta {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; flex-shrink: 0; padding-left: 8px;
+}
+.cat-card .cat-count {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem;
+  line-height: 1;
+}
+.cat-card .cat-arrow {
+  font-size: 16px; color: var(--text-muted); transition: transform 0.25s, color 0.2s;
+}
+.cat-card:hover .cat-arrow { color: var(--bs-primary); transform: translateX(3px); }
+
+/* per-category color theming on picker cards */
+.cat-card.cat-prog::before { background: var(--brand-teal); }
+.cat-card.cat-prog .cat-icon { background: rgba(38,192,187,0.1); }
+.cat-card.cat-prog .cat-count { color: var(--brand-teal); }
+.cat-card.cat-job::before  { background: #2E9E6B; }
+.cat-card.cat-job .cat-icon{ background: rgba(46,158,107,0.1); }
+.cat-card.cat-job .cat-count{ color: #2E9E6B; }
+.cat-card.cat-adm::before  { background: var(--bs-primary); }
+.cat-card.cat-adm .cat-icon{ background: rgba(247,78,83,0.08); }
+.cat-card.cat-adm .cat-count{ color: var(--bs-primary); }
+.cat-card.cat-ai::before   { background: var(--ai-color); }
+.cat-card.cat-ai .cat-icon { background: var(--ai-light); }
+.cat-card.cat-ai .cat-count{ color: var(--ai-color); }
+.cat-card.cat-mia::before  { background: #1D7ED4; }
+.cat-card.cat-mia .cat-icon{ background: rgba(29,126,212,0.1); }
+.cat-card.cat-mia .cat-count{ color: #1D7ED4; }
+
+/* ── Q&A detail panel (revealed when a category is picked) ── */
+.qa-detail { display: flex; flex-direction: column; }
+.qa-detail-head {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+  margin-bottom: 1.25rem;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.qa-back {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 14px 7px 12px; border-radius: 99px;
+  background: var(--surface); border: 1.5px solid var(--border-strong);
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600;
+  color: var(--text-secondary); cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.05s;
+}
+.qa-back:hover { background: var(--bs-primary); border-color: var(--bs-primary); color: #fff; }
+.qa-back:active { transform: translateY(1px); }
+.qa-back-arrow { font-size: 14px; line-height: 1; }
+.qa-detail-title {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: 'Syne', sans-serif;
+}
+.qa-detail-icon {
+  width: 32px; height: 32px; border-radius: 9px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 16px; background: var(--surface2); flex-shrink: 0;
+}
+.qa-detail-name { font-weight: 700; font-size: 1.05rem; color: var(--text-primary); letter-spacing: -0.01em; }
+.qa-detail-count {
+  font-size: 11px; font-weight: 700;
+  background: rgba(0,0,0,0.06); color: var(--text-muted);
+  border-radius: 99px; padding: 2px 9px;
+}
+
+.qa-list { display: flex; flex-direction: column; gap: 8px; }
+.qa-card {
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px;
+  overflow: hidden; box-shadow: var(--shadow-sm); transition: border-color 0.2s, box-shadow 0.2s;
+}
+.qa-card:hover { border-color: var(--border-strong); }
+.qa-card.open { border-color: var(--bs-primary); box-shadow: var(--shadow-md); }
+.qa-card-header { display: flex; align-items: center; gap: 12px; padding: 15px 20px; cursor: pointer; user-select: none; }
+.qa-num { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 800; color: var(--text-muted); flex-shrink: 0; width: 22px; }
+.qa-card.open .qa-num { color: var(--bs-primary); }
+.qa-tag { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 99px; flex-shrink: 0; border: 1px solid; }
+.qa-q  { flex: 1; font-size: 13px; font-weight: 600; color: var(--text-primary); line-height: 1.4; }
+.qa-card.open .qa-q { color: var(--bs-primary); }
+.qa-chevron { font-size: 11px; color: var(--text-muted); transition: transform 0.3s; margin-left: auto; flex-shrink: 0; }
+.qa-card.open .qa-chevron { transform: rotate(180deg); color: var(--bs-primary); }
+.qa-body { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1); }
+.qa-body.open { max-height: 600px; }
+.qa-a { margin: 0 20px; padding: 14px 0 18px 44px; font-size: 13px; color: var(--text-secondary); line-height: 1.75; border-top: 1px solid var(--border); }
+.qa-a strong { color: var(--text-primary); font-weight: 500; }
+.qa-tip { display: block; margin-top: 10px; padding: 7px 12px; border-radius: 8px; background: rgba(247,78,83,0.06); border: 1px solid rgba(247,78,83,0.15); font-size: 11.5px; color: var(--brand-primary-dark); font-style: italic; }
+.tag-prog { color: var(--brand-teal); border-color: rgba(38,192,187,0.3); background: rgba(38,192,187,0.07); }
+.tag-job  { color: #2E9E6B;           border-color: rgba(46,158,107,0.3); background: rgba(46,158,107,0.07); }
+.tag-adm  { color: var(--bs-primary); border-color: rgba(247,78,83,0.3);  background: rgba(247,78,83,0.07);  }
+.tag-ai   { color: var(--ai-color);   border-color: var(--ai-border);     background: var(--ai-light);       }
+.tag-mia  { color: #1D7ED4;           border-color: rgba(29,126,212,0.3); background: rgba(29,126,212,0.07); }
+
+/* ─── FOOTER ─── */
+footer {
+  border-top: 1px solid var(--border); padding: 2rem 0; text-align: center;
+  font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em;
+  background: var(--surface); position: relative; z-index: 1;
+}
+footer strong { color: var(--bs-primary); font-weight: 600; }
+
+.section-anchor { display: block; height: 1px; }
+.reveal { opacity: 0; transform: translateY(20px); }
+
+/* ─── AI BADGE ON CARDS ─── */
+.ai-badge-card {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--ai-light); border: 1px solid var(--ai-border);
+  border-radius: 99px; padding: 4px 10px; margin-bottom: 14px;
+  font-size: 10px; font-weight: 600; color: var(--ai-color);
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.ai-badge-card .ai-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--ai-color);
+  animation: ai-pulse 2s ease-in-out infinite;
+}
+@keyframes ai-pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(0.7); }
+}
+
+/* ─── AI SECTION BANNER ─── */
+.ai-section {
+  margin: 0 0 3rem; position: relative;
+}
+.ai-hero {
+  background: linear-gradient(135deg, #1e0a3c 0%, #2d1057 40%, #0f2a4a 100%);
+  border-radius: 22px; padding: 36px 40px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 8px 40px rgba(124,58,237,0.2), 0 2px 8px rgba(0,0,0,0.1);
+}
+.ai-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 15% 50%, rgba(124,58,237,0.25) 0%, transparent 50%),
+                    radial-gradient(circle at 85% 20%, rgba(38,192,187,0.2) 0%, transparent 45%),
+                    radial-gradient(circle at 60% 90%, rgba(247,78,83,0.12) 0%, transparent 40%);
+  pointer-events: none;
+}
+.ai-hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+.ai-hero-inner { position: relative; z-index: 1; }
+.ai-hero-top {
+  display: flex; align-items: flex-start; gap: 20px; margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.ai-hero-icon {
+  width: 56px; height: 56px; border-radius: 16px; flex-shrink: 0;
+  background: rgba(124,58,237,0.35); border: 1px solid rgba(124,58,237,0.5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+}
+.ai-hero-text { flex: 1; min-width: 200px; }
+.ai-hero-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--brand-teal);
+  display: flex; align-items: center; gap: 7px; margin-bottom: 8px;
+}
+.ai-hero-eyebrow span {
+  display: inline-block; width: 28px; height: 1px; background: var(--brand-teal); opacity: 0.6;
+}
+.ai-hero-title {
+  font-family: 'Syne', sans-serif; font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 800; color: #fff; line-height: 1.15; letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.ai-hero-title em { font-style: normal; color: #a78bfa; }
+.ai-hero-sub { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.65; max-width: 560px; }
+
+/* skills grid */
+.ai-skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.ai-skill-card {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px; padding: 16px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.ai-skill-card:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+.ai-skill-icon { font-size: 20px; margin-bottom: 8px; }
+.ai-skill-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.ai-skill-desc  { font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.5; }
+
+/* tools row */
+.ai-tools-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.45); margin-bottom: 10px;
+}
+.ai-tools-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.ai-tool {
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 99px; padding: 5px 13px;
+  font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.85);
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  cursor: default;
+}
+.ai-tool:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.25); transform: translateY(-2px); }
+.ai-tool-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.tool-gemini  { background: #4285F4; }
+.tool-chatgpt { background: #10A37F; }
+.tool-claude  { background: #D97757; }
+.tool-ccode   { background: #AD373A; }
+.tool-meta    { background: #0082FB; }
+.tool-grok    { background: #888; }
+
+/* differentiator pill */
+.ai-diff-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+.ai-diff-pill {
+  font-size: 11px; font-weight: 500; padding: 5px 13px; border-radius: 99px;
+  background: rgba(124,58,237,0.25); border: 1px solid rgba(124,58,237,0.4);
+  color: #c4b5fd;
+}
+.ai-diff-pill.teal { background: rgba(38,192,187,0.18); border-color: rgba(38,192,187,0.35); color: #5eead4; }
+.ai-diff-pill.coral { background: rgba(247,78,83,0.18); border-color: rgba(247,78,83,0.35); color: #fca5a5; }
+
+/* ═══════════════════════════════════════════════
+   MOBILE — ≤ 640px
+═══════════════════════════════════════════════ */
+@media (max-width: 640px) {
+
+  /* ── Layout / wrap ── */
+  .wrap { padding: 0 1rem 0 1rem; }
+
+  /* ── Lang toggle — smaller, higher z-order awareness ── */
+  #lang-toggle {
+    top: 10px;
+    padding: 2px;
+  }
+  .lang-btn { padding: 5px 12px; font-size: 11px; }
+
+  /* ── Scroll nav — hide on mobile (too cramped) ── */
+  #scroll-nav { display: none; }
+
+  /* ── Header ── */
+  header { padding: 2rem 0 0; }
+  h1 { font-size: 1.9rem; }
+  .subtitle { font-size: 0.9rem; margin-bottom: 2rem; }
+
+  /* ── Degree tabs — stack to 2-col on very small, scroll on wider ── */
+  .degree-nav {
+    gap: 7px;
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .degree-nav::-webkit-scrollbar { display: none; }
+  .deg-tab {
+    padding: 8px 14px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  /* ── KA cards — single column ── */
+  .ka-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* ── Note card in bachelor view ── */
+  .note-card { min-height: 140px; padding: 20px 16px; }
+
+  /* ── KA card internals ── */
+  .ka-card { padding: 18px 16px; }
+  .ka-icon { width: 40px; height: 40px; font-size: 18px; margin-bottom: 12px; }
+  .ka-name { font-size: 0.95rem; }
+  .cert-pill { font-size: 9px; padding: 2px 8px; }
+  .course-name { font-size: 12px; }
+  .course-desc { font-size: 10.5px; }
+
+  /* ── Outcome banner — 2-col grid, hide dividers ── */
+  .outcome-banner {
+    padding: 20px 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .outcome-divider { display: none; }
+  .outcome-num { font-size: 1.8rem; }
+  .outcome-lbl { font-size: 9px; }
+
+  /* ── AI hero section ── */
+  .ai-hero { padding: 22px 18px; border-radius: 16px; }
+  .ai-hero-top { gap: 14px; margin-bottom: 20px; }
+  .ai-hero-icon { width: 46px; height: 46px; font-size: 22px; border-radius: 12px; }
+  .ai-hero-title { font-size: 1.2rem; margin-bottom: 6px; }
+  .ai-hero-sub { font-size: 12px; }
+  .ai-hero-eyebrow { font-size: 9px; }
+
+  /* AI skills — 1 column */
+  .ai-skills-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .ai-skill-card { padding: 12px; }
+  .ai-skill-title { font-size: 12px; }
+  .ai-skill-desc  { font-size: 11px; }
+
+  /* AI tool pills — tighter, wrap freely */
+  .ai-tools-row { gap: 6px; }
+  .ai-tool { font-size: 11px; padding: 4px 10px; }
+  .ai-tool-dot { width: 6px; height: 6px; }
+  .ai-tools-label { font-size: 9px; margin-bottom: 8px; }
+
+  /* AI diff pills — 2 per row */
+  .ai-diff-row { gap: 6px; margin-top: 14px; padding-top: 14px; }
+  .ai-diff-pill { font-size: 10px; padding: 4px 10px; }
+
+  /* ── Q&A section ── */
+  .cat-picker { grid-template-columns: 1fr; gap: 10px; }
+  .cat-card { padding: 14px; gap: 12px; border-radius: 14px; }
+  .cat-card .cat-icon { width: 40px; height: 40px; font-size: 19px; border-radius: 11px; }
+  .cat-card .cat-name { font-size: 0.96rem; }
+  .cat-card .cat-desc { font-size: 11.5px; }
+  .cat-card .cat-count { font-size: 1.2rem; }
+
+  .qa-detail-head { gap: 10px; padding-bottom: 12px; margin-bottom: 1rem; }
+  .qa-back { padding: 6px 12px 6px 10px; font-size: 11.5px; }
+  .qa-detail-icon { width: 28px; height: 28px; font-size: 14px; border-radius: 8px; }
+  .qa-detail-name { font-size: 0.98rem; }
+
+  .qa-card-header { padding: 13px 14px; gap: 8px; }
+  .qa-num  { font-size: 10px; width: 18px; }
+  .qa-tag  { font-size: 9px; padding: 2px 7px; }
+  .qa-q    { font-size: 12px; }
+  .qa-a    { margin: 0 14px; padding: 12px 0 14px 0; font-size: 12px; line-height: 1.7; }
+  .qa-tip  { font-size: 11px; padding: 6px 10px; }
+
+  /* ── Section title ── */
+  .section-title { font-size: 1.15rem; }
+  .section-sub   { font-size: 12px; }
+
+  /* ── Footer ── */
+  footer { font-size: 10px; padding: 1.5rem 0; text-align: center; }
+  footer .wrap { padding: 0 1rem; }
+
+  /* ── Degree label ── */
+  .degree-label { font-size: 10px; letter-spacing: 0.06em; }
+
+  /* ── AU badge in header ── */
+  .au-badge { padding: 5px 14px; margin-bottom: 1.25rem; }
+  .au-badge span { font-size: 10px; }
+
+}
+
+/* ═══════════════════════════════════════════════
+   TABLET — 641–900px
+═══════════════════════════════════════════════ */
+@media (min-width: 641px) and (max-width: 900px) {
+
+  .wrap { padding: 0 1.5rem; }
+  #scroll-nav { right: 10px; }
+
+  h1 { font-size: 2.4rem; }
+
+  .ka-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+  .outcome-banner { padding: 22px 24px; gap: 14px; }
+  .outcome-num { font-size: 1.9rem; }
+  .outcome-divider { height: 36px; }
+
+  .ai-skills-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .ai-hero { padding: 26px 28px; }
+  .ai-hero-title { font-size: 1.35rem; }
+
+  .qa-card-header { padding: 13px 16px; }
+  .qa-a { padding: 12px 0 16px 32px; font-size: 12.5px; }
+
+  .deg-tab { padding: 9px 16px; font-size: 12px; }
+
+}
+
+</style>
+</head>
+<body>
+
+<!-- ─── SCROLL NAVIGATOR ─── -->
+<nav id="scroll-nav">
+  <button class="scroll-btn" title="Go to top" onclick="smoothScrollTo(0)">&#8593;</button>
+  <div class="scroll-progress-wrap"><div class="scroll-progress-fill" id="scroll-fill"></div></div>
+  <div class="scroll-dots" id="scroll-dots"></div>
+  <div class="scroll-progress-wrap"><div class="scroll-progress-fill" id="scroll-fill2"></div></div>
+  <button class="scroll-btn" title="Go to bottom" onclick="smoothScrollTo(document.body.scrollHeight)">&#8595;</button>
+</nav>
+
+<div id="lang-toggle">
+  <button class="lang-btn active" id="btn-en" onclick="setLang('en',this)">🇺🇸 EN</button>
+  <button class="lang-btn"        id="btn-es" onclick="setLang('es',this)">🇪🇸 ES</button>
+</div>
+<div class="wrap">
+
+  <div class="section-anchor" id="sec-top"></div>
+
+  <!-- HEADER -->
+  <header class="reveal">
+    <div class="au-badge"><div class="au-dot"></div><span id="i-hdr_badge">Atlantis University &middot; Information Technology</span></div>
+    <h1 id="i-hdr_h1">Know what you're<br>selling. <em>Sell it</em> <strong>with confidence.</strong></h1>
+    <p class="subtitle" id="i-hdr_sub">A reference guide for the Admissions Department — everything you need to have a great conversation with any prospect interested in IT.</p>
+  </header>
+
+  <!-- DEGREE TABS -->
+  <div class="degree-nav reveal">
+    <div class="deg-tab assoc active" onclick="showDegree('assoc',this)">
+      <div class="deg-tab-dot assoc-dot"></div><span id="i-deg_assoc">Associate of Science</span>
+    </div>
+    <div class="deg-tab bach" onclick="showDegree('bach',this)">
+      <div class="deg-tab-dot bach-dot"></div><span id="i-deg_bach">Bachelor of Science</span>
+    </div>
+    <div class="deg-tab both" onclick="showDegree('both',this)">
+      <div class="deg-tab-dot both-dot"></div><span id="i-deg_both">Full Path</span>
+    </div>
+  </div>
+
+  <!-- ─── ASSOCIATE ─── -->
+  <div id="sec-assoc" class="degree-section visible">
+    <p class="degree-label reveal"><span id="i-lbl_assoc">Associate in IT &middot; 3 knowledge areas &middot; 3 AU certificates &middot; 3 industry certifications</span></p>
+    <div class="ka-grid">
+
+      <div class="ka-card ka-prog reveal" onclick="toggleCard(this)">
+        <div class="ka-icon">&#128187;</div>
+        <div class="ai-badge-card"><div class="ai-dot"></div>Applied Gen AI integrated</div>
+        <div class="ka-name" id="i-prog_name">Programming &amp; Operating Systems</div>
+        <div class="ka-tagline" id="i-prog_tag">How computers think — and how to make them do what you want.</div>
+        <div class="cert-row">
+          <span class="cert-pill">Python Institute PCEP</span>
+          <span class="cert-pill">AU Certified MIS Associate</span>
+        </div>
+        <div class="ka-toggle"><span>View courses</span><div class="ka-arrow">&#8595;</div></div>
+        <div class="course-list">
+          <div class="course-divider"></div>
+          <div class="course-item"><div class="course-num">CIT 102</div><div><div class="course-name">Introduction to Programming</div><div class="course-desc">First steps in Python — logic, variables, loops, and problem-solving.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 105</div><div><div class="course-name">Programming Practice</div><div class="course-desc">Applied Python: functions, file handling, and real mini-projects.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 110</div><div><div class="course-name">Operating Systems</div><div class="course-desc">Windows and Linux internals — how an OS manages hardware and software.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 225</div><div><div class="course-name">Management Information Systems</div><div class="course-desc">How businesses use IT systems — the bridge between tech and business.</div></div></div>
+          <div class="au-cert-block"><div class="au-medal">&#127885;</div><div><div class="au-cert-label" id="i-cert_lbl_1">AU Certificate earned</div><div class="au-cert-name">Certified MIS Associate</div></div></div>
+        </div>
+      </div>
+
+      <div class="ka-card ka-net reveal" onclick="toggleCard(this)">
+        <div class="ka-icon">&#127760;</div>
+        <div class="ai-badge-card"><div class="ai-dot"></div>Applied Gen AI integrated</div>
+        <div class="ka-name" id="i-net_name">Network Technology</div>
+        <div class="ka-tagline" id="i-net_tag">The backbone of every company — designing, running, and fixing networks.</div>
+        <div class="cert-row">
+          <span class="cert-pill">CompTIA Network+</span>
+          <span class="cert-pill">AU Certified Network Operations Associate</span>
+        </div>
+        <div class="ka-toggle"><span>View courses</span><div class="ka-arrow">&#8595;</div></div>
+        <div class="course-list">
+          <div class="course-divider"></div>
+          <div class="course-item"><div class="course-num">CIT 280</div><div><div class="course-name">Network Design</div><div class="course-desc">Topologies, protocols, and how to architect a corporate network from scratch.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 281</div><div><div class="course-name">Network Administration &amp; Support</div><div class="course-desc">Day-to-day operations: Cisco configs, troubleshooting, and help desk scenarios.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 282</div><div><div class="course-name">Advanced Network Administration</div><div class="course-desc">Advanced routing, switching, VLANs, and enterprise-level configurations.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 283</div><div><div class="course-name">Networking: Azure and AWS</div><div class="course-desc">Cloud networking — virtual networks, firewalls, and hybrid infrastructures.</div></div></div>
+          <div class="au-cert-block"><div class="au-medal">&#127885;</div><div><div class="au-cert-label" id="i-cert_lbl_2">AU Certificate earned</div><div class="au-cert-name">Certified Network Operations Associate</div></div></div>
+        </div>
+      </div>
+
+      <div class="ka-card ka-cloud reveal" onclick="toggleCard(this)">
+        <div class="ka-icon">&#9729;&#65039;</div>
+        <div class="ai-badge-card"><div class="ai-dot"></div>Applied Gen AI integrated</div>
+        <div class="ka-name" id="i-cld_name">Cloud Technology</div>
+        <div class="ka-tagline" id="i-cld_tag">Where all modern infrastructure lives — Linux, Azure, and cloud services.</div>
+        <div class="cert-row">
+          <span class="cert-pill">Microsoft Certified Fundamentals</span>
+          <span class="cert-pill">AU Certified Cloud Technology Associate</span>
+        </div>
+        <div class="ka-toggle"><span>View courses</span><div class="ka-arrow">&#8595;</div></div>
+        <div class="course-list">
+          <div class="course-divider"></div>
+          <div class="course-item"><div class="course-num">CIT 381</div><div><div class="course-name">Linux</div><div class="course-desc">The OS that runs the internet — command line, servers, and automation.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 382</div><div><div class="course-name">Cloud Technology</div><div class="course-desc">Azure and AWS fundamentals — storage, virtual machines, and cloud services.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 383</div><div><div class="course-name">Advanced Cloud Technology</div><div class="course-desc">Scaling infrastructure, cloud automation, and deployment pipelines.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 384</div><div><div class="course-name">Cloud Technology Identities</div><div class="course-desc">User management, permissions, and security in cloud environments.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 385</div><div><div class="course-name">Cloud Technology Compute Services</div><div class="course-desc">VMs, containers, serverless — how to run workloads in the cloud.</div></div></div>
+          <div class="au-cert-block"><div class="au-medal">&#127885;</div><div><div class="au-cert-label" id="i-cert_lbl_3">AU Certificate earned</div><div class="au-cert-name">Certified Cloud Technology Associate</div></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── BACHELOR ─── -->
+  <div id="sec-bach" class="degree-section">
+    <p class="degree-label reveal"><span id="i-lbl_bach">Bachelor in IT &middot; builds on Associate &middot; adds 2 more areas &middot; 5 AU certificates total</span></p>
+    <div class="ka-grid">
+
+      <div class="ka-card note-card reveal">
+        <div style="font-size:30px;margin-bottom:12px;">&#127891;</div>
+        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--brand-teal);margin-bottom:8px;">Includes all Associate areas</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.65;">Programming &amp; OS &middot; Network Technology &middot; Cloud Technology<br><br>Students complete the full Associate foundation first, then specialize further with two additional knowledge areas.</div>
+      </div>
+
+      <div class="ka-card ka-db reveal" onclick="toggleCard(this)">
+        <div class="ka-icon">&#128452;&#65039;</div>
+        <div class="ai-badge-card"><div class="ai-dot"></div>Applied Gen AI integrated</div>
+        <div class="ka-name" id="i-db_name">Database Systems</div>
+        <div class="ka-tagline" id="i-db_tag">Every app runs on data — students learn to design, query, and manage databases at scale.</div>
+        <div class="cert-row">
+          <span class="cert-pill">Microsoft Azure Data Fundamentals</span>
+          <span class="cert-pill">AU Certified Database Operations Associate</span>
+        </div>
+        <div class="ka-toggle"><span>View courses</span><div class="ka-arrow">&#8595;</div></div>
+        <div class="course-list">
+          <div class="course-divider"></div>
+          <div class="course-item"><div class="course-num">CIT 406</div><div><div class="course-name">Database Design</div><div class="course-desc">How to structure and model data for real-world applications.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 407</div><div><div class="course-name">T-SQL: Queries Design</div><div class="course-desc">Writing SQL to extract, transform, and report on business data.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 408</div><div><div class="course-name">Database Management Operations</div><div class="course-desc">Running and maintaining production databases — backups, performance, security.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 410</div><div><div class="course-name">NoSQL Databases</div><div class="course-desc">Modern databases for big data and cloud-native applications.</div></div></div>
+          <div class="au-cert-block"><div class="au-medal">&#127885;</div><div><div class="au-cert-label" id="i-cert_lbl_4">AU Certificate earned</div><div class="au-cert-name">Certified Database Operations Associate</div></div></div>
+        </div>
+      </div>
+
+      <div class="ka-card ka-sec reveal" onclick="toggleCard(this)">
+        <div class="ka-icon">&#128272;</div>
+        <div class="ai-badge-card"><div class="ai-dot"></div>Applied Gen AI integrated</div>
+        <div class="ka-name" id="i-sec_name">Cybersecurity</div>
+        <div class="ka-tagline" id="i-sec_tag">The most in-demand IT specialty — protecting systems, data, and organizations.</div>
+        <div class="cert-row">
+          <span class="cert-pill">CompTIA Security+</span>
+          <span class="cert-pill">CompTIA CySA+</span>
+          <span class="cert-pill">AU Certified Cybersecurity Associate</span>
+        </div>
+        <div class="ka-toggle"><span>View courses</span><div class="ka-arrow">&#8595;</div></div>
+        <div class="course-list">
+          <div class="course-divider"></div>
+          <div class="course-item"><div class="course-num">CIT 480</div><div><div class="course-name">Security Technology</div><div class="course-desc">Firewalls, IDS/IPS, encryption — the toolbox of a security professional.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 482</div><div><div class="course-name">Security Analyst</div><div class="course-desc">Monitoring systems, reading logs, detecting threats — the defender's mindset.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 481</div><div><div class="course-name">Security Ethical Hacking</div><div class="course-desc">Thinking like an attacker to find vulnerabilities before bad actors do.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 483</div><div><div class="course-name">Information Systems Security</div><div class="course-desc">Policies, compliance, and risk management — the business side of security.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 484</div><div><div class="course-name">Advanced Information Systems Security</div><div class="course-desc">Threat intelligence, incident response, and security architecture.</div></div></div>
+          <div class="au-cert-block"><div class="au-medal">&#127885;</div><div><div class="au-cert-label" id="i-cert_lbl_5">AU Certificate earned</div><div class="au-cert-name">Certified Cybersecurity Associate</div></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── FULL PATH ─── -->
+  <div id="sec-both" class="degree-section">
+    <p class="degree-label reveal"><span id="i-lbl_both">Complete IT journey &middot; Associate &#8594; Bachelor &middot; 5 knowledge areas &middot; 5 AU certificates &middot; 6 industry certifications</span></p>
+    <div class="ka-grid">
+      <div class="ka-card ka-prog reveal" onclick="toggleCard(this)">
+        <div class="ka-icon">&#128187;</div>
+        <div class="ai-badge-card"><div class="ai-dot"></div>Applied Gen AI integrated</div>
+        <div class="ka-name">Programming &amp; OS</div>
+        <div class="cert-row"><span class="cert-pill">Python Institute PCEP</span></div>
+        <div class="ka-toggle"><span>4 courses</span><div class="ka-arrow">&#8595;</div></div>
+        <div class="course-list">
+          <div class="course-divider"></div>
+          <div class="course-item"><div class="course-num">CIT 102</div><div><div class="course-name">Intro to Programming</div><div class="course-desc">First steps in Python and logic.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 105</div><div><div class="course-name">Programming Practice</div><div class="course-desc">Applied Python projects.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 110</div><div><div class="course-name">Operating Systems</div><div class="course-desc">Windows and Linux internals.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 225</div><div><div class="course-name">Mgmt Information Systems</div><div class="course-desc">IT for business decision-making.</div></div></div>
+          <div class="au-cert-block"><div class="au-medal">&#127885;</div><div><div class="au-cert-label">AU cert</div><div class="au-cert-name">Certified MIS Associate</div></div></div>
+        </div>
+      </div>
+      <div class="ka-card ka-net reveal" onclick="toggleCard(this)">
+        <div class="ka-icon">&#127760;</div>
+        <div class="ai-badge-card"><div class="ai-dot"></div>Applied Gen AI integrated</div>
+        <div class="ka-name">Network Technology</div>
+        <div class="cert-row"><span class="cert-pill">CompTIA Network+</span></div>
+        <div class="ka-toggle"><span>4 courses</span><div class="ka-arrow">&#8595;</div></div>
+        <div class="course-list">
+          <div class="course-divider"></div>
+          <div class="course-item"><div class="course-num">CIT 280</div><div><div class="course-name">Network Design</div><div class="course-desc">Topologies and architecture.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 281</div><div><div class="course-name">Network Admin &amp; Support</div><div class="course-desc">Cisco configs and troubleshooting.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 282</div><div><div class="course-name">Advanced Network Admin</div><div class="course-desc">VLANs and enterprise networking.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 283</div><div><div class="course-name">Networking Azure &amp; AWS</div><div class="course-desc">Cloud and hybrid networks.</div></div></div>
+          <div class="au-cert-block"><div class="au-medal">&#127885;</div><div><div class="au-cert-label">AU cert</div><div class="au-cert-name">Certified Network Operations Associate</div></div></div>
+        </div>
+      </div>
+      <div class="ka-card ka-cloud reveal" onclick="toggleCard(this)">
+        <div class="ka-icon">&#9729;&#65039;</div>
+        <div class="ai-badge-card"><div class="ai-dot"></div>Applied Gen AI integrated</div>
+        <div class="ka-name">Cloud Technology</div>
+        <div class="cert-row"><span class="cert-pill">Microsoft Certified Fundamentals</span></div>
+        <div class="ka-toggle"><span>5 courses</span><div class="ka-arrow">&#8595;</div></div>
+        <div class="course-list">
+          <div class="course-divider"></div>
+          <div class="course-item"><div class="course-num">CIT 381</div><div><div class="course-name">Linux</div><div class="course-desc">Command line and server admin.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 382</div><div><div class="course-name">Cloud Technology</div><div class="course-desc">Azure and AWS fundamentals.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 383</div><div><div class="course-name">Advanced Cloud Technology</div><div class="course-desc">Scaling and automation.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 384</div><div><div class="course-name">Cloud Technology Identities</div><div class="course-desc">User management and permissions.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 385</div><div><div class="course-name">Cloud Compute Services</div><div class="course-desc">VMs, containers, serverless.</div></div></div>
+          <div class="au-cert-block"><div class="au-medal">&#127885;</div><div><div class="au-cert-label">AU cert</div><div class="au-cert-name">Certified Cloud Technology Associate</div></div></div>
+        </div>
+      </div>
+      <div class="ka-card ka-db reveal" onclick="toggleCard(this)">
+        <div class="ka-icon">&#128452;&#65039;</div>
+        <div class="ai-badge-card"><div class="ai-dot"></div>Applied Gen AI integrated</div>
+        <div class="ka-name">Database Systems</div>
+        <div class="cert-row"><span class="cert-pill">Azure Data Fundamentals</span></div>
+        <div class="ka-toggle"><span>4 courses</span><div class="ka-arrow">&#8595;</div></div>
+        <div class="course-list">
+          <div class="course-divider"></div>
+          <div class="course-item"><div class="course-num">CIT 406</div><div><div class="course-name">Database Design</div><div class="course-desc">Structuring and modeling data.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 407</div><div><div class="course-name">T-SQL: Queries Design</div><div class="course-desc">Writing SQL for business data.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 408</div><div><div class="course-name">Database Mgmt Operations</div><div class="course-desc">Backups, performance, security.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 410</div><div><div class="course-name">NoSQL Databases</div><div class="course-desc">Big data and cloud-native apps.</div></div></div>
+          <div class="au-cert-block"><div class="au-medal">&#127885;</div><div><div class="au-cert-label">AU cert</div><div class="au-cert-name">Certified Database Operations Associate</div></div></div>
+        </div>
+      </div>
+      <div class="ka-card ka-sec reveal" onclick="toggleCard(this)">
+        <div class="ka-icon">&#128272;</div>
+        <div class="ai-badge-card"><div class="ai-dot"></div>Applied Gen AI integrated</div>
+        <div class="ka-name">Cybersecurity</div>
+        <div class="cert-row"><span class="cert-pill">CompTIA Security+</span><span class="cert-pill">CySA+</span></div>
+        <div class="ka-toggle"><span>5 courses</span><div class="ka-arrow">&#8595;</div></div>
+        <div class="course-list">
+          <div class="course-divider"></div>
+          <div class="course-item"><div class="course-num">CIT 480</div><div><div class="course-name">Security Technology</div><div class="course-desc">Firewalls, encryption, IDS/IPS.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 482</div><div><div class="course-name">Security Analyst</div><div class="course-desc">Monitoring and threat detection.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 481</div><div><div class="course-name">Security Ethical Hacking</div><div class="course-desc">Find vulnerabilities before hackers do.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 483</div><div><div class="course-name">Information Systems Security</div><div class="course-desc">Compliance and risk management.</div></div></div>
+          <div class="course-item"><div class="course-num">CIT 484</div><div><div class="course-name">Advanced Info Systems Security</div><div class="course-desc">Incident response and architecture.</div></div></div>
+          <div class="au-cert-block"><div class="au-medal">&#127885;</div><div><div class="au-cert-label">AU cert</div><div class="au-cert-name">Certified Cybersecurity Associate</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── APPLIED GEN AI BANNER ─── -->
+  <div class="section-anchor" id="sec-ai"></div>
+  <div class="ai-section reveal">
+    <div class="ai-hero">
+      <div class="ai-hero-inner">
+        <div class="ai-hero-top">
+          <div class="ai-hero-icon">&#129504;</div>
+          <div class="ai-hero-text">
+            <div class="ai-hero-eyebrow"><span></span><span id="i-ai_eyebrow">New in every module</span><span></span></div>
+            <div class="ai-hero-title"><span id="i-ai_title">Applied <em>Generative AI</em> is now integrated across all IT programs</span></div>
+            <div class="ai-hero-sub"><span id="i-ai_sub">Every knowledge area now includes hands-on AI skills — students don't just learn IT, they learn to amplify their work with the most powerful tools available today. This is a curriculum-wide commitment, not an elective.</span></div>
+          </div>
+        </div>
+
+        <div class="ai-skills-grid">
+          <div class="ai-skill-card">
+            <div class="ai-skill-icon">&#9997;&#65039;</div>
+            <div class="ai-skill-title" id="i-ai_s1t">Prompt Engineering</div>
+            <div class="ai-skill-desc"><span id="i-ai_s1d">How to write effective instructions that get reliable, high-quality results from AI models.</span></div>
+          </div>
+          <div class="ai-skill-card">
+            <div class="ai-skill-icon">&#128196;</div>
+            <div class="ai-skill-title" id="i-ai_s2t">Context Engineering</div>
+            <div class="ai-skill-desc"><span id="i-ai_s2d">Building rich, structured context so AI tools understand the full picture — not just the question.</span></div>
+          </div>
+          <div class="ai-skill-card">
+            <div class="ai-skill-icon">&#128300;</div>
+            <div class="ai-skill-title" id="i-ai_s3t">LLM Tool Mastery</div>
+            <div class="ai-skill-desc"><span id="i-ai_s3d">Practical, hands-on experience across the leading AI platforms used in industry today.</span></div>
+          </div>
+          <div class="ai-skill-card">
+            <div class="ai-skill-icon">&#128736;&#65039;</div>
+            <div class="ai-skill-title" id="i-ai_s4t">AI-Augmented Workflows</div>
+            <div class="ai-skill-desc"><span id="i-ai_s4d">Applying AI within real IT tasks — network docs, security reports, database queries, cloud configs.</span></div>
+          </div>
+        </div>
+
+        <div class="ai-tools-label" id="i-ai_tools">AI platforms students work with hands-on</div>
+        <div class="ai-tools-row">
+          <div class="ai-tool"><div class="ai-tool-dot tool-gemini"></div>Gemini</div>
+          <div class="ai-tool"><div class="ai-tool-dot tool-chatgpt"></div>ChatGPT</div>
+          <div class="ai-tool"><div class="ai-tool-dot tool-claude"></div>Claude AI</div>
+          <div class="ai-tool"><div class="ai-tool-dot tool-ccode"></div>Claude Code</div>
+          <div class="ai-tool"><div class="ai-tool-dot tool-meta"></div>Meta AI</div>
+          <div class="ai-tool"><div class="ai-tool-dot tool-grok"></div>Grok</div>
+        </div>
+
+        <div class="ai-diff-row">
+          <div class="ai-diff-pill"><span id="i-ai_d1">&#10003; &nbsp;Graduates are AI-ready, not just IT-ready</span></div>
+          <div class="ai-diff-pill teal"><span id="i-ai_d2">&#10003; &nbsp;No separate AI course needed — it&#39;s built in</span></div>
+          <div class="ai-diff-pill coral"><span id="i-ai_d3">&#10003; &nbsp;Strong differentiator vs. competing programs</span></div>
+          <div class="ai-diff-pill"><span id="i-ai_d4">&#10003; &nbsp;Practical tools, not just theory</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── STATS ─── -->
+  <div class="section-anchor" id="sec-stats"></div>
+  <div class="outcome-banner reveal">
+    <div class="outcome-stat"><div class="outcome-num" id="stat-ka">5</div><div class="outcome-lbl" id="i-stat_ka">Knowledge areas</div></div>
+    <div class="outcome-divider"></div>
+    <div class="outcome-stat"><div class="outcome-num" id="stat-courses">17</div><div class="outcome-lbl" id="i-stat_courses">Specialized courses</div></div>
+    <div class="outcome-divider"></div>
+    <div class="outcome-stat"><div class="outcome-num" id="stat-certs">6</div><div class="outcome-lbl" id="i-stat_certs">Industry certifications</div></div>
+    <div class="outcome-divider"></div>
+    <div class="outcome-stat"><div class="outcome-num" id="stat-au">5</div><div class="outcome-lbl" id="i-stat_au">AU certificates</div></div>
+    <div class="outcome-divider"></div>
+    <div class="outcome-stat"><div class="outcome-num">2</div><div class="outcome-lbl" id="i-stat_deg">Degree paths</div></div>
+  </div>
+
+  <!-- ─── TALKING POINTS ─── -->
+  <div class="section-anchor" id="sec-talking"></div>
+  <div class="qa-section reveal">
+    <h2 class="section-title" id="i-qa_title">Common prospect questions — and how to answer them</h2>
+    <p class="section-sub" id="i-qa_sub">Pick a category to see 5 talking points. Built for live calls — short, direct, ready to use.</p>
+
+    <!-- ▸ Category picker (default view) -->
+    <div class="cat-picker" id="cat-picker">
+      <button type="button" class="cat-card cat-prog" onclick="pickCategory('prog')">
+        <div class="cat-icon">&#128205;</div>
+        <div class="cat-text">
+          <div class="cat-name" id="i-cat_prog">Programs</div>
+          <div class="cat-desc" id="i-cat_prog_d">Choosing a track, what's covered, switching paths</div>
+        </div>
+        <div class="cat-meta"><span class="cat-count">5</span><span class="cat-arrow">&rarr;</span></div>
+      </button>
+      <button type="button" class="cat-card cat-job" onclick="pickCategory('job')">
+        <div class="cat-icon">&#128188;</div>
+        <div class="cat-text">
+          <div class="cat-name" id="i-cat_job">Career &amp; Jobs</div>
+          <div class="cat-desc" id="i-cat_job_d">Roles, salaries, certifications, future of IT work</div>
+        </div>
+        <div class="cat-meta"><span class="cat-count">5</span><span class="cat-arrow">&rarr;</span></div>
+      </button>
+      <button type="button" class="cat-card cat-adm" onclick="pickCategory('adm')">
+        <div class="cat-icon">&#127891;</div>
+        <div class="cat-text">
+          <div class="cat-name" id="i-cat_adm">Admissions</div>
+          <div class="cat-desc" id="i-cat_adm_d">Prerequisites, length, working students, transfers</div>
+        </div>
+        <div class="cat-meta"><span class="cat-count">5</span><span class="cat-arrow">&rarr;</span></div>
+      </button>
+      <button type="button" class="cat-card cat-ai" onclick="pickCategory('ai')">
+        <div class="cat-icon">&#129504;</div>
+        <div class="cat-text">
+          <div class="cat-name" id="i-cat_ai">Applied AI</div>
+          <div class="cat-desc" id="i-cat_ai_d">How AI is integrated, tools, prompt engineering</div>
+        </div>
+        <div class="cat-meta"><span class="cat-count">5</span><span class="cat-arrow">&rarr;</span></div>
+      </button>
+      <button type="button" class="cat-card cat-mia" onclick="pickCategory('mia')">
+        <div class="cat-icon">&#127796;</div>
+        <div class="cat-text">
+          <div class="cat-name" id="i-cat_mia">Miami &amp; Market</div>
+          <div class="cat-desc" id="i-cat_mia_d">Local employers, bilingual edge, networking, mobility</div>
+        </div>
+        <div class="cat-meta"><span class="cat-count">5</span><span class="cat-arrow">&rarr;</span></div>
+      </button>
+    </div>
+
+    <!-- ▸ Q&A detail panel (revealed when a category is picked) -->
+    <div class="qa-detail" id="qa-detail" hidden>
+      <div class="qa-detail-head">
+        <button type="button" class="qa-back" onclick="backToCategories()">
+          <span class="qa-back-arrow">&larr;</span><span id="i-qa_back">All categories</span>
+        </button>
+        <div class="qa-detail-title">
+          <span class="qa-detail-icon" id="qa-detail-icon">&#128205;</span>
+          <span class="qa-detail-name" id="qa-detail-name">Programs</span>
+          <span class="qa-detail-count">5</span>
+        </div>
+      </div>
+      <div class="qa-list">
+      <div class="qa-card" data-cat="prog" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">01</div>
+          <span class="qa-tag tag-prog" id="i-tag_01"></span>
+          <div class="qa-q" id="i-q01"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a01"></div></div>
+      </div>
+      <div class="qa-card" data-cat="prog" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">02</div>
+          <span class="qa-tag tag-prog" id="i-tag_02"></span>
+          <div class="qa-q" id="i-q02"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a02"></div></div>
+      </div>
+      <div class="qa-card" data-cat="prog" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">03</div>
+          <span class="qa-tag tag-prog" id="i-tag_03"></span>
+          <div class="qa-q" id="i-q03"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a03"></div></div>
+      </div>
+      <div class="qa-card" data-cat="prog" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">04</div>
+          <span class="qa-tag tag-prog" id="i-tag_04"></span>
+          <div class="qa-q" id="i-q04"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a04"></div></div>
+      </div>
+      <div class="qa-card" data-cat="prog" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">05</div>
+          <span class="qa-tag tag-prog" id="i-tag_05"></span>
+          <div class="qa-q" id="i-q05"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a05"></div></div>
+      </div>
+      <div class="qa-card" data-cat="job" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">06</div>
+          <span class="qa-tag tag-job" id="i-tag_06"></span>
+          <div class="qa-q" id="i-q06"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a06"></div></div>
+      </div>
+      <div class="qa-card" data-cat="job" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">07</div>
+          <span class="qa-tag tag-job" id="i-tag_07"></span>
+          <div class="qa-q" id="i-q07"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a07"></div></div>
+      </div>
+      <div class="qa-card" data-cat="job" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">08</div>
+          <span class="qa-tag tag-job" id="i-tag_08"></span>
+          <div class="qa-q" id="i-q08"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a08"></div></div>
+      </div>
+      <div class="qa-card" data-cat="job" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">09</div>
+          <span class="qa-tag tag-job" id="i-tag_09"></span>
+          <div class="qa-q" id="i-q09"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a09"></div></div>
+      </div>
+      <div class="qa-card" data-cat="adm" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">10</div>
+          <span class="qa-tag tag-adm" id="i-tag_10"></span>
+          <div class="qa-q" id="i-q10"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a10"></div></div>
+      </div>
+      <div class="qa-card" data-cat="adm" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">11</div>
+          <span class="qa-tag tag-adm" id="i-tag_11"></span>
+          <div class="qa-q" id="i-q11"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a11"></div></div>
+      </div>
+      <div class="qa-card" data-cat="adm" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">12</div>
+          <span class="qa-tag tag-adm" id="i-tag_12"></span>
+          <div class="qa-q" id="i-q12"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a12"></div></div>
+      </div>
+      <div class="qa-card" data-cat="adm" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">13</div>
+          <span class="qa-tag tag-adm" id="i-tag_13"></span>
+          <div class="qa-q" id="i-q13"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a13"></div></div>
+      </div>
+      <div class="qa-card" data-cat="ai" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">14</div>
+          <span class="qa-tag tag-ai" id="i-tag_14"></span>
+          <div class="qa-q" id="i-q14"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a14"></div></div>
+      </div>
+      <div class="qa-card" data-cat="ai" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">15</div>
+          <span class="qa-tag tag-ai" id="i-tag_15"></span>
+          <div class="qa-q" id="i-q15"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a15"></div></div>
+      </div>
+      <div class="qa-card" data-cat="ai" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">16</div>
+          <span class="qa-tag tag-ai" id="i-tag_16"></span>
+          <div class="qa-q" id="i-q16"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a16"></div></div>
+      </div>
+      <div class="qa-card" data-cat="ai" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">17</div>
+          <span class="qa-tag tag-ai" id="i-tag_17"></span>
+          <div class="qa-q" id="i-q17"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a17"></div></div>
+      </div>
+      <div class="qa-card" data-cat="mia" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">18</div>
+          <span class="qa-tag tag-mia" id="i-tag_18"></span>
+          <div class="qa-q" id="i-q18"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a18"></div></div>
+      </div>
+      <div class="qa-card" data-cat="mia" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">19</div>
+          <span class="qa-tag tag-mia" id="i-tag_19"></span>
+          <div class="qa-q" id="i-q19"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a19"></div></div>
+      </div>
+      <div class="qa-card" data-cat="mia" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">20</div>
+          <span class="qa-tag tag-mia" id="i-tag_20"></span>
+          <div class="qa-q" id="i-q20"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a20"></div></div>
+      </div>
+      <div class="qa-card" data-cat="job" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">21</div>
+          <span class="qa-tag tag-job" id="i-tag_21"></span>
+          <div class="qa-q" id="i-q21"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a21"></div></div>
+      </div>
+      <div class="qa-card" data-cat="adm" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">22</div>
+          <span class="qa-tag tag-adm" id="i-tag_22"></span>
+          <div class="qa-q" id="i-q22"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a22"></div></div>
+      </div>
+      <div class="qa-card" data-cat="ai" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">23</div>
+          <span class="qa-tag tag-ai" id="i-tag_23"></span>
+          <div class="qa-q" id="i-q23"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a23"></div></div>
+      </div>
+      <div class="qa-card" data-cat="mia" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">24</div>
+          <span class="qa-tag tag-mia" id="i-tag_24"></span>
+          <div class="qa-q" id="i-q24"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a24"></div></div>
+      </div>
+      <div class="qa-card" data-cat="mia" onclick="toggleQA(this)">
+        <div class="qa-card-header">
+          <div class="qa-num">25</div>
+          <span class="qa-tag tag-mia" id="i-tag_25"></span>
+          <div class="qa-q" id="i-q25"></div>
+          <div class="qa-chevron">▼</div>
+        </div>
+        <div class="qa-body"><div class="qa-a" id="i-a25"></div></div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<div class="section-anchor" id="sec-bottom"></div>
+<footer>
+  <div class="wrap"><strong>Atlantis University</strong> &middot; <span id="i-footer_dept">Department of Information Technology &middot; Admissions Reference Guide</span> &middot; <strong>By Professor De Le&oacute;n</strong></div>
+</footer>
+
+<!-- ─── AI ADVISOR CHAT DOCK ─── -->
+<button id="chat-launcher" type="button" aria-label="Open AI Advisor" onclick="window.AUChat && AUChat.open()">
+  <span class="cl-icon">&#129504;</span>
+  <span class="cl-text">
+    <span class="cl-line1" id="i-chat_launcher_t">Ask the AI Advisor</span>
+    <span class="cl-line2" id="i-chat_launcher_s">Live answers, in EN or ES</span>
+  </span>
+  <span class="cl-pulse"></span>
+</button>
+
+<div id="chat-backdrop" onclick="window.AUChat && AUChat.close()"></div>
+
+<aside id="chat-panel" aria-hidden="true" aria-label="AU IT Advisor chat">
+  <header class="chat-head">
+    <div class="chat-head-text">
+      <div class="chat-head-eyebrow"><span class="dot"></span><span id="i-chat_head_eyebrow">AU IT Advisor</span></div>
+      <div class="chat-head-title" id="i-chat_head_title">Ask anything for your next prospect call</div>
+    </div>
+    <div class="chat-head-actions">
+      <button type="button" id="chat-reset" class="chat-btn chat-btn-ghost" title="Reset conversation">
+        <span id="i-chat_reset">Reset</span>
+      </button>
+      <button type="button" id="chat-close" class="chat-btn chat-btn-icon" aria-label="Close" onclick="window.AUChat && AUChat.close()">&times;</button>
+    </div>
+  </header>
+
+  <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
+    <div class="chat-msg assistant welcome">
+      <div class="chat-bubble">
+        <p><strong id="i-chat_welcome_h">Hi — I'm the AU IT Advisor.</strong></p>
+        <p id="i-chat_welcome_b">Ask me anything you need for a prospect call: program details, scripts for objections, salary data, or how to position bilingual students. I match the language you write in.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="chat-typing" class="chat-typing hidden" aria-hidden="true">
+    <span></span><span></span><span></span>
+  </div>
+
+  <form id="chat-form" class="chat-input">
+    <textarea
+      id="chat-textarea"
+      rows="2"
+      autocomplete="off"
+      required
+    ></textarea>
+    <div class="chat-actions">
+      <span class="chat-hint" id="i-chat_hint">Enter to send &middot; Shift+Enter for newline</span>
+      <button type="submit" id="chat-send" class="chat-btn chat-btn-primary">
+        <span class="chat-btn-label" id="i-chat_send">Send</span>
+        <span class="chat-btn-spinner" aria-hidden="true"></span>
+      </button>
+    </div>
+  </form>
+</aside>
+
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// ─── SCROLL NAVIGATOR ───
+const sections = [
+  { id: 'sec-top',     label: 'Top' },
+  { id: 'sec-assoc',   label: 'Programs' },
+  { id: 'sec-ai',      label: 'Gen AI' },
+  { id: 'sec-stats',   label: 'Stats' },
+  { id: 'sec-talking', label: 'Q&A' },
+  { id: 'sec-bottom',  label: 'Bottom' },
+];
+
+const dotsContainer = document.getElementById('scroll-dots');
+sections.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'scroll-dot' + (i === 0 ? ' active' : '');
+  dot.title = s.label;
+  dot.onclick = () => {
+    const el = document.getElementById(s.id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  dotsContainer.appendChild(dot);
+});
+
+function smoothScrollTo(y) { window.scrollTo({ top: y, behavior: 'smooth' }); }
+
+function updateScrollNav() {
+  const scrollTop = window.scrollY;
+  const docH = document.body.scrollHeight - window.innerHeight;
+  const pct = docH > 0 ? Math.min((scrollTop / docH) * 100, 100) : 0;
+  document.getElementById('scroll-fill').style.height  = pct + '%';
+  document.getElementById('scroll-fill2').style.height = pct + '%';
+
+  const dots = dotsContainer.querySelectorAll('.scroll-dot');
+  let activeIdx = 0;
+  sections.forEach((s, i) => {
+    const el = document.getElementById(s.id);
+    if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.6) activeIdx = i;
+  });
+  dots.forEach((d, i) => d.classList.toggle('active', i === activeIdx));
+}
+
+window.addEventListener('scroll', updateScrollNav, { passive: true });
+updateScrollNav();
+
+// ─── GSAP REVEALS ───
+gsap.to('header', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.15 });
+gsap.to('.degree-nav', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: 0.35 });
+
+gsap.utils.toArray('.reveal').forEach((el, i) => {
+  if (el.closest('header') || el.closest('.degree-nav')) return;
+  gsap.to(el, {
+    scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' },
+    opacity: 1, y: 0, duration: 0.55, ease: 'power3.out', delay: (i % 3) * 0.07
+  });
+});
+
+// ─── DEGREE SWITCHING ───
+const degreeData = {
+  assoc: { ka: 3, courses: 13, certs: 3, au: 3 },
+  bach:  { ka: 5, courses: 17, certs: 6, au: 5 },
+  both:  { ka: 5, courses: 17, certs: 6, au: 5 },
+};
+
+function showDegree(id, tabEl) {
+  document.querySelectorAll('.degree-section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.deg-tab').forEach(t => t.classList.remove('active','assoc','bach','both'));
+  document.getElementById('sec-' + id).classList.add('visible');
+  tabEl.classList.add('active', id);
+
+  const d = degreeData[id];
+  animateCounter('stat-ka',      d.ka);
+  animateCounter('stat-courses', d.courses);
+  animateCounter('stat-certs',   d.certs);
+  animateCounter('stat-au',      d.au);
+
+  gsap.fromTo('#sec-' + id + ' .reveal',
+    { opacity: 0, y: 22 },
+    { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', stagger: 0.07 }
+  );
+}
+
+function animateCounter(id, target) {
+  const el = document.getElementById(id);
+  const start = parseInt(el.textContent) || 0;
+  gsap.to({ val: start }, {
+    val: target, duration: 0.65, ease: 'power2.out',
+    onUpdate: function() { el.textContent = Math.round(this.targets()[0].val); }
+  });
+}
+
+// ─── CARD TOGGLE ───
+function toggleCard(card) {
+  const list = card.querySelector('.course-list');
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.ka-card.open').forEach(c => {
+    if (c !== card) {
+      c.classList.remove('open');
+      c.querySelector('.course-list').classList.remove('open');
+    }
+  });
+  if (!isOpen) {
+    card.classList.add('open');
+    list.classList.add('open');
+    gsap.fromTo(card.querySelectorAll('.course-item, .au-cert-block'),
+      { opacity: 0, x: -12 },
+      { opacity: 1, x: 0, duration: 0.32, ease: 'power2.out', stagger: 0.055, delay: 0.1 }
+    );
+    setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 120);
+  } else {
+    card.classList.remove('open');
+    list.classList.remove('open');
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// i18n SYSTEM — simple id-based innerHTML swap
+// ══════════════════════════════════════════════════════
+const T = {
+en: {
+  hdr_badge: 'Atlantis University &middot; Information Technology',
+  hdr_h1:    "Know what you're<br>selling. <em>Sell it</em> <strong>with confidence.</strong>",
+  hdr_sub:   'A reference guide for the Admissions Department — everything you need to have a great conversation with any prospect interested in IT.',
+  deg_assoc: 'Associate of Science',
+  deg_bach:  'Bachelor of Science',
+  deg_both:  'Full Path',
+  lbl_assoc: 'Associate in IT &middot; 3 knowledge areas &middot; 3 AU certificates &middot; 3 industry certifications',
+  lbl_bach:  'Bachelor in IT &middot; builds on Associate &middot; adds 2 more areas &middot; 5 AU certificates total',
+  lbl_both:  'Complete IT journey &middot; Associate &#8594; Bachelor &middot; 5 knowledge areas &middot; 5 AU certificates &middot; 6 industry certifications',
+  stat_ka: 'Knowledge areas', stat_courses: 'Specialized courses',
+  stat_certs: 'Industry certifications', stat_au: 'AU certificates', stat_deg: 'Degree paths',
+  ai_eyebrow: 'New in every module',
+  ai_title: 'Applied <em>Generative AI</em> is now integrated across all IT programs',
+  ai_sub: "Every knowledge area now includes hands-on AI skills — students don't just learn IT, they learn to amplify their work with the most powerful tools available today. This is a curriculum-wide commitment, not an elective.",
+  ai_s1t: 'Prompt Engineering',    ai_s1d: 'How to write effective instructions that get reliable, high-quality results from AI models.',
+  ai_s2t: 'Context Engineering',   ai_s2d: 'Building rich, structured context so AI tools understand the full picture — not just the question.',
+  ai_s3t: 'LLM Tool Mastery',      ai_s3d: 'Practical, hands-on experience across the leading AI platforms used in industry today.',
+  ai_s4t: 'AI-Augmented Workflows',ai_s4d: 'Applying AI within real IT tasks — network docs, security reports, database queries, cloud configs.',
+  ai_tools: 'AI platforms students work with hands-on',
+  ai_d1: '&#10003; &nbsp;Graduates are AI-ready, not just IT-ready',
+  ai_d2: '&#10003; &nbsp;No separate AI course needed — it&#39;s built in',
+  ai_d3: '&#10003; &nbsp;Strong differentiator vs. competing programs',
+  ai_d4: '&#10003; &nbsp;Practical tools, not just theory',
+  prog_name: 'Programming &amp; Operating Systems', prog_tag: 'How computers think — and how to make them do what you want.',
+  net_name:  'Network Technology',  net_tag: 'The backbone of every company — designing, running, and fixing networks.',
+  cld_name:  'Cloud Technology',    cld_tag: 'Where all modern infrastructure lives — Linux, Azure, and cloud services.',
+  db_name:   'Database Systems',    db_tag:  'Every app runs on data — students learn to design, query, and manage databases at scale.',
+  sec_name:  'Cybersecurity',       sec_tag: 'The most in-demand IT specialty — protecting systems, data, and organizations.',
+  cert_lbl_1:'AU Certificate earned',cert_lbl_2:'AU Certificate earned',cert_lbl_3:'AU Certificate earned',cert_lbl_4:'AU Certificate earned',cert_lbl_5:'AU Certificate earned',
+  footer_dept: 'Department of Information Technology &middot; Admissions Reference Guide',
+  qa_title: 'Common prospect questions — and how to answer them',
+  qa_sub:   'Pick a category to see 5 talking points. Built for live calls — short, direct, ready to use.',
+  qa_back:  'All categories',
+  cat_prog:'Programs',          cat_prog_d:"Choosing a track, what's covered, switching paths",
+  cat_job: 'Career &amp; Jobs', cat_job_d: 'Roles, salaries, certifications, future of IT work',
+  cat_adm: 'Admissions',        cat_adm_d: 'Prerequisites, length, working students, transfers',
+  cat_ai:  'Applied AI',        cat_ai_d:  'How AI is integrated, tools, prompt engineering',
+  cat_mia: 'Miami &amp; Market',cat_mia_d: 'Local employers, bilingual edge, networking, mobility',
+  tag_01:'Programs',tag_02:'Programs',tag_03:'Programs',tag_04:'Programs',tag_05:'Programs',
+  tag_06:'Career',  tag_07:'Career',  tag_08:'Career',  tag_09:'Career', tag_21:'Career',
+  tag_10:'Admissions',tag_11:'Admissions',tag_12:'Admissions',tag_13:'Admissions',tag_22:'Admissions',
+  tag_14:'Applied AI',tag_15:'Applied AI',tag_16:'Applied AI',tag_17:'Applied AI',tag_23:'Applied AI',
+  tag_18:'Miami',   tag_19:'Miami',   tag_20:'Miami', tag_24:'Miami', tag_25:'Miami',
+  q01:"I like computers but I don't know which program is right for me.",
+  q02:"What is the difference between the Associate and the Bachelor's?",
+  q03:"Is cybersecurity only for hackers?",
+  q04:'What is Cloud Technology? I thought everything was just "the internet."',
+  q05:"Can I switch knowledge areas if I pick the wrong one?",
+  q06:"What can I do with an Associate in IT? Is it enough to get a job?",
+  q07:"What certifications will I earn and what are they worth?",
+  q08:"How much can I expect to earn after graduating?",
+  q09:"Is IT a field that will survive AI? Will these jobs still exist?",
+  q10:"Do I need to know how to code already to get in?",
+  q11:"If I start with the Associate, can I continue to the Bachelor's later?",
+  q12:"How long does each program take to complete?",
+  q13:"I'm not sure I'm smart enough for IT. Is this program too hard for me?",
+  q14:'What does "AI in every module" actually mean in practice?',
+  q15:"Does AU teach AI separately or is it part of the IT program?",
+  q16:"My prospect says they specifically want to study AI — is this the right program?",
+  q17:"What is Prompt Engineering and why does it matter for an IT student?",
+  q18:"Is IT a growing field in Miami specifically?",
+  q19:"I speak Spanish — is that an advantage in IT in Miami?",
+  q20:"Are there local internship or job placement opportunities through AU?",
+  a01:'Ask two or three questions before recommending anything: <strong>What kind of work excites you — building things, fixing things, protecting things, or analyzing data?</strong> The answers map directly to our programs. Hands-on fixers → Network Technology. Builders → Programming &amp; OS. Infrastructure → Cloud Technology. Data-minded → Database Systems. Protectors → Cybersecurity.<span class="qa-tip">💡 Tip: Never recommend a program without asking at least one question first. The right question earns trust and gets the right match.</span>',
+  a02:"The Associate covers <strong>3 knowledge areas</strong>: Programming &amp; OS, Network Technology, and Cloud Technology — with 3 industry certifications and 3 AU certificates. It's a complete, job-ready credential. The Bachelor's adds <strong>2 more areas</strong>: Database Systems and Cybersecurity — for 5 AU certificates and 6 industry certifications total. Every Associate credit counts toward the Bachelor's.<span class='qa-tip'>💡 Tip: Frame it as one road with two exit ramps, not two separate programs.</span>",
+  a03:'Not at all. The majority of cybersecurity jobs are <strong>defenders</strong> — Security Analysts, IT Auditors, Compliance Officers, Risk Managers. CIT 480 and CIT 482 focus on defense and threat detection. CIT 481 (Ethical Hacking) teaches the attacker mindset so defenders can think ahead. Students graduate with both CompTIA Security+ and CySA+ — certifications that employers in healthcare, finance, and government require.',
+  a04:'Cloud Technology is the infrastructure that makes the internet work for businesses — the servers, virtual machines, and networks that companies like Netflix, hospitals, and banks run on. Students learn <strong>Linux</strong> (the OS the internet runs on), then <strong>Azure and AWS</strong> through CIT 381–385. The track earns a Microsoft Certified Fundamentals credential.',
+  a05:"Yes — and it's easier than most students fear. All IT programs share a common foundation in the Associate, so early courses overlap between tracks. The admissions conversation is the right time to get this right, but if a student enrolls and discovers a better fit, an academic advisor can help redirect with minimal credit loss.",
+  a06:'Absolutely. The Associate is designed to be job-ready on completion. Graduates qualify for <strong>Network Support Technician, IT Help Desk Specialist, Systems Administrator, Cloud Operations Analyst</strong>, and more — with 3 AU certificates and 3 industry certifications employers recognize immediately. Many students start working in IT before they even graduate.',
+  a07:"Bachelor's graduates are positioned for <strong>6 industry certifications</strong>: Python Institute PCEP, CompTIA Network+, Microsoft Certified Fundamentals, Azure Data Fundamentals, CompTIA Security+, and CompTIA CySA+ — plus 5 AU internal certificates. CompTIA Network+ and Security+ are listed as requirements by thousands of employers including government agencies and major corporations.",
+  a08:'Entry-level IT roles in South Florida typically start between <strong>$45,000–$58,000</strong>. Network Administrators average $70,000–$82,000 nationally. Cybersecurity professionals command the highest salaries — Security Analysts average over $90,000, and senior roles exceed $110,000. Cloud roles are similarly strong.',
+  a09:'IT is one of the fields most <strong>amplified</strong> by AI, not replaced by it. Every network, cloud system, and database that AI runs on needs human professionals to design, maintain, and secure it. More AI adoption means more infrastructure, which means more IT jobs. Our Applied Gen AI integration graduates students who use AI as a tool — making them more productive and more valuable.',
+  a10:'No prerequisites required. <strong>CIT 102 — Introduction to Programming</strong> starts at absolute zero. The same is true across all areas: Network Design (CIT 280), Linux (CIT 381), Database Design (CIT 406), and Security Technology (CIT 480) all begin at the foundational level. Designed for career changers and first-time learners.',
+  a11:"Yes — and this is one of the strongest points to make. The Associate is designed as <strong>the first two years of the Bachelor's</strong>. Every credit transfers. A student simply picks up where they left off, adding Database Systems and Cybersecurity. No re-application, no credit loss, no starting over.<span class='qa-tip'>💡 Tip: This is a powerful message for cost-conscious prospects — start smaller, get working, continue later.</span>",
+  a12:'The <strong>Associate</strong> is typically completed in <strong>2 years</strong> of full-time study (3 knowledge areas, 13 specialized courses). The <strong>Bachelor\'s</strong> adds 2 more areas — 4 years total from start to finish for full-time students. Part-time and accelerated options may vary.',
+  a13:"This is one of the most common things we hear — and it's almost always unfounded. IT is a learnable field built on structured problem-solving, not innate talent. The program is designed progressively, starting from zero. <strong>The barrier is confidence, not ability.</strong><span class='qa-tip'>💡 Tip: Validate the concern, then redirect — \"That's exactly why the program starts from scratch.\"</span>",
+  a14:'Every course includes hands-on work with AI tools as part of the coursework — not as a bonus, not as an elective. A networking student uses <strong>Claude or ChatGPT to generate network configuration documentation</strong>. Students graduate with three core AI skills: <strong>Prompt Engineering</strong>, <strong>Context Engineering</strong>, and <strong>LLM Tool Mastery</strong> — across ChatGPT, Claude AI, Claude Code, Gemini, Meta AI, and Grok.',
+  a15:"It's built into every module — not a separate course or elective. At Atlantis University, AI isn't something you study after you learn IT — it's the environment you learn IT in. <strong>Every knowledge area is taught with AI tools as part of the workflow.</strong> Graduates aren't just IT professionals — they're AI-augmented IT professionals, a categorically more valuable credential in today's market.",
+  a16:"Yes — with an important clarification. AI tools run on IT infrastructure. A student who wants to work in AI needs to understand networks, cloud systems, databases, and security. This program teaches them to <strong>use AI tools professionally while building the IT foundation that AI depends on</strong>.<span class='qa-tip'>💡 Tip: \"AI runs on IT\" is a great frame for this conversation.</span>",
+  a17:'Prompt Engineering is the skill of writing instructions that get reliable, professional-quality results from AI models. For an IT student, this means generating a network configuration template, debugging a script, writing security documentation, or analyzing a log file — and getting back something actually useful. <strong>It turns AI from a toy into a professional tool.</strong>',
+  a18:'Miami is rapidly becoming one of the most important tech hubs in the Western Hemisphere. <strong>Microsoft, Citadel, SAP, and hundreds of Latin American-facing tech firms</strong> have expanded Miami operations in recent years. Florida\'s tech sector added over 40,000 jobs in the last reporting period. IT unemployment in the region is among the lowest of any professional field.',
+  a19:'It is a <strong>significant advantage</strong>. Miami is the gateway to Latin America for hundreds of multinational companies. Many specifically seek bilingual IT professionals who can support Spanish-speaking clients. Bilingual IT professionals at Miami-based firms often command higher compensation.<span class="qa-tip">💡 Tip: One of the most powerful local differentiators. Don\'t underestimate it with Spanish-speaking prospects.</span>',
+  a20:"AU's IT faculty maintain active industry connections in South Florida and Latin American markets — including real consulting engagements with local clients. This creates a pipeline of professional exposure through applied projects, industry partnerships, and career connections. For specific programs, refer prospects to Career Services.",
+  q21:"Which companies in Miami actually hire AU IT graduates?",
+  q22:"Can a student work full-time and still complete the program?",
+  q23:"Is using AI in coursework allowed, or is it considered cheating?",
+  q24:"If a student moves out of Miami, will the credentials still be valuable?",
+  q25:"Are there networking events or meetups our students can attend before they graduate?",
+  a21:'Miami has the broadest IT employer mix in the southeast. <strong>Microsoft, Citadel, and SAP</strong> have all expanded local operations. Add hundreds of multinational firms running their Latin America IT from Miami, the major hospital networks, banks, the cruise industry, and a deep bench of MSPs serving Spanish-speaking clients across the region.<span class="qa-tip">💡 Tip: For a current employer list, internships, or active openings, route the prospect to Career Services — that\'s their dataset, not ours.</span>',
+  a22:"Yes — and many of our students do exactly that. The program is designed for working adults: <strong>no prerequisites</strong>, courses start at zero, and the Associate ladders cleanly into the Bachelor's so a student can pause between credentials if life requires it. For specific class times, full-time vs. part-time pacing, or evening options, route to <strong>Academic Advising</strong>.",
+  a23:"Using AI is part of the curriculum — students are <strong>expected</strong> to use it and learn to use it well. <strong>Prompt Engineering</strong> and <strong>Context Engineering</strong> are taught skills, not banned ones. The standard isn't \"don't use AI\" — it's \"use AI like a professional\": validate outputs, credit assistance where required, and don't blindly copy. <strong>This is one of the program's strongest differentiators.</strong>",
+  a24:"Yes — every credential is industry-standard or nationally accredited. <strong>CompTIA Network+, Security+, CySA+, Microsoft Certified Fundamentals, Azure Data Fundamentals, and Python Institute PCEP</strong> are recognized everywhere employers hire IT staff. The Associate and Bachelor's degrees move with the student. Bilingual graduates are sought across the southern US, Texas, and parts of California — Miami is a launchpad, not a ceiling.",
+  a25:"Yes — Miami's tech scene is steadily growing. Active groups include <strong>HackMiami</strong> (cybersecurity), <strong>regional CompTIA chapters</strong>, AWS and Azure user groups, and university-run industry events. Faculty connections create direct intro paths.<span class=\"qa-tip\">💡 Tip: For the current calendar of AU-organized industry days or specific networking events, route to Career Services.</span>",
+  chat_launcher_t: 'Ask the AI Advisor',
+  chat_launcher_s: 'Live answers, in EN or ES',
+  chat_head_eyebrow: 'AU IT Advisor',
+  chat_head_title:  'Ask anything for your next prospect call',
+  chat_welcome_h:   "Hi — I'm the AU IT Advisor.",
+  chat_welcome_b:   'Ask me anything you need for a prospect call: program details, scripts for objections, salary data, or how to position bilingual students. I match the language you write in.',
+  chat_reset:       'Reset',
+  chat_send:        'Send',
+  chat_hint:        'Enter to send · Shift+Enter for newline',
+  chat_placeholder: 'Type your question for the advisor…',
+  chat_cleared:     '**Conversation cleared.** Ready for the next prospect — what\'s the question?',
+  chat_err_generic: '**Sorry — something went wrong.**',
+  chat_err_network: '**Network error.** Could not reach the server. Check your connection and try again.',
+},
+es: {
+  hdr_badge: 'Atlantis University &middot; Tecnología de la Información',
+  hdr_h1:    'Conoce lo que<br>vendes. <em>Véndelo</em> <strong>con confianza.</strong>',
+  hdr_sub:   'Una guía de referencia para el Departamento de Admisiones — todo lo que necesitas para tener una excelente conversación con cualquier prospecto interesado en TI.',
+  deg_assoc: 'Asociado en Ciencias',
+  deg_bach:  'Licenciatura en Ciencias',
+  deg_both:  'Camino Completo',
+  lbl_assoc: 'Asociado en TI &middot; 3 áreas de conocimiento &middot; 3 certificados AU &middot; 3 certificaciones industriales',
+  lbl_bach:  'Licenciatura en TI &middot; incluye el Asociado &middot; añade 2 áreas más &middot; 5 certificados AU en total',
+  lbl_both:  'Trayectoria completa en TI &middot; Asociado &#8594; Licenciatura &middot; 5 áreas &middot; 5 certificados AU &middot; 6 certificaciones industriales',
+  stat_ka: 'Áreas de conocimiento', stat_courses: 'Cursos especializados',
+  stat_certs: 'Certificaciones industriales', stat_au: 'Certificados AU', stat_deg: 'Vías académicas',
+  ai_eyebrow: 'Nuevo en cada módulo',
+  ai_title: 'La <em>IA Generativa Aplicada</em> ya está integrada en todos los programas de TI',
+  ai_sub: 'Cada área de conocimiento incluye habilidades prácticas de IA — los estudiantes no solo aprenden TI, aprenden a amplificar su trabajo con las herramientas más potentes disponibles hoy. Es un compromiso de todo el plan de estudios, no una electiva.',
+  ai_s1t: 'Ingeniería de Prompts',     ai_s1d: 'Cómo escribir instrucciones efectivas que obtengan resultados confiables y de alta calidad de los modelos de IA.',
+  ai_s2t: 'Ingeniería de Contexto',    ai_s2d: 'Construir contexto rico y estructurado para que las herramientas de IA entiendan el panorama completo — no solo la pregunta.',
+  ai_s3t: 'Dominio de Herramientas LLM', ai_s3d: 'Experiencia práctica en las principales plataformas de IA utilizadas en la industria hoy.',
+  ai_s4t: 'Flujos de Trabajo con IA', ai_s4d: 'Aplicar IA en tareas reales de TI — documentación de redes, informes de seguridad, consultas de bases de datos, configuraciones en la nube.',
+  ai_tools: 'Plataformas de IA con las que los estudiantes trabajan en la práctica',
+  ai_d1: '&#10003; &nbsp;Los graduados están listos para la IA, no solo para TI',
+  ai_d2: '&#10003; &nbsp;No se necesita un curso de IA separado — está integrado',
+  ai_d3: '&#10003; &nbsp;Diferenciador clave frente a programas competidores',
+  ai_d4: '&#10003; &nbsp;Herramientas prácticas, no solo teoría',
+  prog_name: 'Programación &amp; Sistemas Operativos', prog_tag: 'Cómo piensan las computadoras — y cómo hacer que hagan lo que quieres.',
+  net_name:  'Tecnología de Redes',    net_tag: 'La columna vertebral de toda empresa — diseñar, operar y mantener redes.',
+  cld_name:  'Tecnología en la Nube', cld_tag: 'Donde vive la infraestructura moderna — Linux, Azure y servicios en la nube.',
+  db_name:   'Sistemas de Bases de Datos', db_tag: 'Toda aplicación corre sobre datos — los estudiantes aprenden a diseñar, consultar y administrar bases de datos.',
+  sec_name:  'Ciberseguridad',         sec_tag: 'La especialidad TI más demandada — proteger sistemas, datos y organizaciones.',
+  cert_lbl_1:'Certificado AU obtenido',cert_lbl_2:'Certificado AU obtenido',cert_lbl_3:'Certificado AU obtenido',cert_lbl_4:'Certificado AU obtenido',cert_lbl_5:'Certificado AU obtenido',
+  footer_dept: 'Departamento de Tecnología de la Información &middot; Guía de Referencia para Admisiones',
+  qa_title: 'Preguntas frecuentes de prospectos — y cómo responderlas',
+  qa_sub:   'Elige una categoría para ver 5 puntos de conversación. Diseñado para llamadas en vivo — corto, directo y listo para usar.',
+  qa_back:  'Todas las categorías',
+  cat_prog:'Programas',          cat_prog_d:'Elegir una especialidad, qué se cubre, cambiar de camino',
+  cat_job: 'Carrera &amp; Empleos', cat_job_d: 'Puestos, salarios, certificaciones, futuro del trabajo en TI',
+  cat_adm: 'Admisiones',         cat_adm_d: 'Requisitos, duración, estudiantes que trabajan, transferencias',
+  cat_ai:  'IA Aplicada',        cat_ai_d:  'Cómo se integra la IA, herramientas, ingeniería de prompts',
+  cat_mia: 'Miami &amp; Mercado',cat_mia_d: 'Empleadores locales, ventaja bilingüe, networking, movilidad',
+  tag_01:'Programas',tag_02:'Programas',tag_03:'Programas',tag_04:'Programas',tag_05:'Programas',
+  tag_06:'Carrera',  tag_07:'Carrera',  tag_08:'Carrera',  tag_09:'Carrera', tag_21:'Carrera',
+  tag_10:'Admisiones',tag_11:'Admisiones',tag_12:'Admisiones',tag_13:'Admisiones',tag_22:'Admisiones',
+  tag_14:'IA Aplicada',tag_15:'IA Aplicada',tag_16:'IA Aplicada',tag_17:'IA Aplicada',tag_23:'IA Aplicada',
+  tag_18:'Miami',   tag_19:'Miami',   tag_20:'Miami', tag_24:'Miami', tag_25:'Miami',
+  q01:'Me gustan las computadoras pero no sé qué programa es el adecuado para mí.',
+  q02:'¿Cuál es la diferencia entre el Asociado y la Licenciatura?',
+  q03:'¿La ciberseguridad es solo para hackers?',
+  q04:'¿Qué es la Tecnología en la Nube? Pensé que todo era simplemente "internet".',
+  q05:'¿Puedo cambiar de área de conocimiento si elijo la equivocada?',
+  q06:'¿Qué puedo hacer con un Asociado en TI? ¿Es suficiente para conseguir trabajo?',
+  q07:'¿Qué certificaciones obtendré y cuánto valen?',
+  q08:'¿Cuánto puedo esperar ganar al graduarme?',
+  q09:'¿Es el TI un campo que sobrevivirá a la IA? ¿Seguirán existiendo estos empleos?',
+  q10:'¿Necesito saber programar de antemano para ingresar?',
+  q11:'Si comienzo con el Asociado, ¿puedo continuar con la Licenciatura después?',
+  q12:'¿Cuánto tiempo tarda en completarse cada programa?',
+  q13:'No creo ser suficientemente inteligente para TI. ¿Es este programa demasiado difícil?',
+  q14:'¿Qué significa "IA en cada módulo" en la práctica?',
+  q15:'¿AU enseña IA por separado o es parte del programa de TI?',
+  q16:'Mi prospecto dice que quiere estudiar IA específicamente — ¿es este el programa correcto?',
+  q17:'¿Qué es la Ingeniería de Prompts y por qué importa para un estudiante de TI?',
+  q18:'¿Es el TI un campo en crecimiento específicamente en Miami?',
+  q19:'Hablo español — ¿es eso una ventaja en TI en Miami?',
+  q20:'¿Existen oportunidades de pasantías o colocación laboral a través de AU?',
+  a01:'Haz dos o tres preguntas antes de recomendar algo: <strong>¿Qué tipo de trabajo te emociona — construir, arreglar, proteger o analizar datos?</strong> Las respuestas se mapean directamente con nuestros programas. Manos a la obra → Tecnología de Redes. Constructores → Programación y SO. Infraestructura → Tecnología en la Nube. Analíticos → Bases de Datos. Protectores → Ciberseguridad.<span class="qa-tip">💡 Consejo: Nunca recomiendes un programa sin hacer al menos una pregunta primero.</span>',
+  a02:'El Asociado cubre <strong>3 áreas de conocimiento</strong>: Programación y SO, Tecnología de Redes y Tecnología en la Nube — con 3 certificaciones industriales y 3 certificados AU. Es una credencial completa lista para el trabajo. La Licenciatura añade <strong>2 áreas más</strong>: Sistemas de Bases de Datos y Ciberseguridad — 5 certificados AU y 6 certificaciones industriales en total.<span class="qa-tip">💡 Consejo: Preséntalo como un camino con dos salidas, no como dos programas separados.</span>',
+  a03:'Para nada. La mayoría de los empleos en ciberseguridad son de <strong>defensa</strong> — Analistas de Seguridad, Auditores de TI, Oficiales de Cumplimiento. CIT 480 y CIT 482 se enfocan en defensa y detección de amenazas. CIT 481 (Hacking Ético) enseña la mentalidad del atacante. Los estudiantes obtienen CompTIA Security+ y CySA+.',
+  a04:'La Tecnología en la Nube es la infraestructura que hace que internet funcione para las empresas — los servidores, máquinas virtuales y redes en las que operan compañías como Netflix, hospitales y bancos. Los estudiantes aprenden <strong>Linux</strong>, luego las plataformas <strong>Azure y AWS</strong> a través de CIT 381–385. El programa otorga la credencial Microsoft Certified Fundamentals.',
+  a05:'Sí — y es más fácil de lo que temen. Todos los programas de TI comparten una base común en el Asociado, por lo que los cursos iniciales se superponen entre las especialidades. Si un estudiante descubre una mejor opción, un asesor académico puede ayudar a redirigir el camino con pérdida mínima de créditos.',
+  a06:'Absolutamente. El Asociado está diseñado para ser una credencial lista para el mercado laboral. Los graduados califican para <strong>Técnico de Soporte de Redes, Especialista de Soporte TI, Administrador de Sistemas, Analista de Operaciones en la Nube</strong> y más — con 3 certificados AU y 3 certificaciones industriales reconocidas de inmediato.',
+  a07:'Los graduados de la Licenciatura están posicionados para <strong>6 certificaciones industriales</strong>: Python Institute PCEP, CompTIA Network+, Microsoft Certified Fundamentals, Azure Data Fundamentals, CompTIA Security+ y CompTIA CySA+ — más 5 certificados internos de AU. CompTIA Network+ y Security+ aparecen como requisitos en miles de empleadores.',
+  a08:'Los roles de TI de nivel inicial en el sur de Florida suelen comenzar entre <strong>$45,000–$58,000</strong>. Los Administradores de Redes promedian $70,000–$82,000 a nivel nacional. Los profesionales de ciberseguridad tienen los salarios más altos — Analistas de Seguridad promedian más de $90,000.',
+  a09:'El TI es uno de los campos más <strong>amplificados</strong> por la IA, no reemplazados por ella. Cada red, sistema en la nube y base de datos que usa la IA necesita profesionales humanos para diseñarla, mantenerla y protegerla. Más adopción de IA significa más infraestructura y más empleos en TI.',
+  a10:'No se requieren conocimientos previos. <strong>CIT 102 — Introducción a la Programación</strong> asume conocimiento cero. Lo mismo aplica en todas las áreas: Diseño de Redes (CIT 280), Linux (CIT 381), Diseño de Bases de Datos (CIT 406) y Tecnología de Seguridad (CIT 480) comienzan desde el nivel fundamental.',
+  a11:'Sí — y este es uno de los puntos más importantes. El Asociado está diseñado como <strong>los primeros dos años de la Licenciatura</strong>. Cada crédito se transfiere. Un estudiante simplemente retoma desde donde lo dejó, añadiendo Sistemas de Bases de Datos y Ciberseguridad. Sin re-aplicación, sin pérdida de créditos.<span class="qa-tip">💡 Consejo: Mensaje poderoso para prospectos conscientes del costo.</span>',
+  a12:'El <strong>Asociado</strong> se completa típicamente en <strong>2 años</strong> a tiempo completo (3 áreas de conocimiento, 13 cursos especializados). La <strong>Licenciatura</strong> añade 2 áreas más — 4 años en total para estudiantes a tiempo completo.',
+  a13:'Esto es de las cosas más comunes que escuchamos — y casi siempre carece de fundamento. El TI es un campo aprendible construido sobre resolución estructurada de problemas. El programa está diseñado progresivamente, comenzando desde cero. <strong>La barrera es la confianza, no la habilidad.</strong><span class="qa-tip">💡 Consejo: Valida la preocupación, luego redirige — "Por eso exactamente el programa comienza desde cero."</span>',
+  a14:'Cada curso incluye trabajo práctico con herramientas de IA como parte del plan de estudios — no como bono, no como electiva. Un estudiante de redes usa <strong>Claude o ChatGPT para generar documentación de configuración</strong>. Los estudiantes dominan tres habilidades clave de IA: <strong>Ingeniería de Prompts</strong>, <strong>Ingeniería de Contexto</strong> y <strong>Dominio de Herramientas LLM</strong>.',
+  a15:'Está integrada en cada módulo — no es un curso separado ni una electiva. En Atlantis University, la IA no es algo que estudias después de aprender TI — es el entorno en el que aprendes TI. <strong>Cada área de conocimiento se enseña con herramientas de IA como parte del flujo de trabajo.</strong>',
+  a16:'Sí — con una aclaración importante. Las herramientas de IA corren sobre infraestructura de TI. Este programa enseña a los estudiantes a <strong>usar herramientas de IA profesionalmente mientras construyen la base de TI de la que depende la IA</strong>.<span class="qa-tip">💡 Consejo: "La IA corre sobre TI" es un excelente marco para esta conversación.</span>',
+  a17:'La Ingeniería de Prompts es la habilidad de escribir instrucciones que obtienen resultados confiables y de calidad profesional de los modelos de IA. Para un estudiante de TI, esto significa generar plantillas de configuración de red, depurar scripts o analizar archivos de registro — y obtener algo realmente útil. <strong>Convierte la IA de un juguete en una herramienta profesional.</strong>',
+  a18:'Miami se está convirtiendo rápidamente en uno de los centros tecnológicos más importantes del hemisferio occidental. <strong>Microsoft, Citadel, SAP y cientos de empresas orientadas a América Latina</strong> han expandido sus operaciones en Miami en los últimos años. El desempleo en TI en la región es de los más bajos.',
+  a19:'Es una <strong>ventaja significativa</strong>. Miami es la puerta de entrada a América Latina para cientos de empresas multinacionales. Muchas buscan específicamente profesionales de TI bilingües. Los profesionales de TI bilingües en Miami frecuentemente perciben una compensación mayor.<span class="qa-tip">💡 Consejo: Este es uno de los diferenciadores locales más poderosos.</span>',
+  a20:'Los profesores de TI de AU mantienen conexiones activas con la industria en el sur de Florida y los mercados latinoamericanos — incluyendo compromisos reales de consultoría con clientes locales. Para programas específicos de colocación y pasantías, refiere a los prospectos a la oficina de Servicios de Carrera.',
+  q21:'¿Qué empresas en Miami realmente contratan graduados de TI de AU?',
+  q22:'¿Puede un estudiante trabajar tiempo completo y aún así completar el programa?',
+  q23:'¿Está permitido usar IA en los cursos, o se considera trampa?',
+  q24:'Si un estudiante se muda fuera de Miami, ¿las credenciales seguirán teniendo valor?',
+  q25:'¿Hay eventos de networking o meetups a los que nuestros estudiantes pueden asistir antes de graduarse?',
+  a21:'Miami tiene la mayor variedad de empleadores de TI del sureste. <strong>Microsoft, Citadel y SAP</strong> han expandido sus operaciones locales. A esto se suman cientos de multinacionales que operan TI para América Latina desde Miami, las grandes redes hospitalarias, bancos, la industria de cruceros y muchos MSPs que atienden clientes hispanohablantes en la región.<span class="qa-tip">💡 Consejo: Para una lista actualizada de empleadores, pasantías o vacantes activas, refiere al prospecto a Servicios de Carrera — esos datos los maneja esa oficina.</span>',
+  a22:'Sí — y muchos de nuestros estudiantes lo hacen. El programa está diseñado para adultos que trabajan: <strong>sin requisitos previos</strong>, los cursos comienzan desde cero, y el Asociado conecta directamente con la Licenciatura para que un estudiante pueda hacer una pausa entre credenciales si la vida lo requiere. Para horarios específicos, opciones de tiempo completo o parcial, o clases nocturnas, refiere a <strong>Asesoría Académica</strong>.',
+  a23:'Usar IA es parte del plan de estudios — los estudiantes <strong>deben</strong> usarla y aprender a usarla bien. La <strong>Ingeniería de Prompts</strong> y la <strong>Ingeniería de Contexto</strong> son habilidades que se enseñan, no que se prohíben. El estándar no es "no uses IA" — es "usa la IA como un profesional": valida los resultados, da crédito al asistente cuando corresponda, y no copies a ciegas. <strong>Es uno de los diferenciadores más fuertes del programa.</strong>',
+  a24:'Sí — cada credencial es estándar de la industria o está acreditada nacionalmente. <strong>CompTIA Network+, Security+, CySA+, Microsoft Certified Fundamentals, Azure Data Fundamentals y Python Institute PCEP</strong> son reconocidas dondequiera que se contrate personal de TI. El Asociado y la Licenciatura se mueven con el estudiante. Los graduados bilingües son muy buscados en el sur de Estados Unidos, Texas y partes de California — Miami es una rampa de lanzamiento, no un techo.',
+  a25:'Sí — la escena tecnológica de Miami crece de forma constante. Grupos activos incluyen <strong>HackMiami</strong> (ciberseguridad), <strong>capítulos regionales de CompTIA</strong>, grupos de usuarios de AWS y Azure, y eventos universitarios con la industria. Las conexiones de los profesores crean rutas directas de presentación.<span class="qa-tip">💡 Consejo: Para el calendario actual de jornadas industriales organizadas por AU o eventos específicos de networking, refiere a Servicios de Carrera.</span>',
+  chat_launcher_t: 'Pregúntale al Asesor IA',
+  chat_launcher_s: 'Respuestas al instante, en EN o ES',
+  chat_head_eyebrow: 'Asesor IA — TI de AU',
+  chat_head_title:  'Pregunta lo que necesites para tu próxima llamada',
+  chat_welcome_h:   'Hola — soy el Asesor IA de TI de AU.',
+  chat_welcome_b:   'Pregúntame lo que necesites para una llamada con un prospecto: detalles de programas, guiones para objeciones, datos de salarios o cómo posicionar a estudiantes bilingües. Respondo en el idioma en que escribas.',
+  chat_reset:       'Reiniciar',
+  chat_send:        'Enviar',
+  chat_hint:        'Enter para enviar · Shift+Enter para salto de línea',
+  chat_placeholder: 'Escribe tu pregunta para el asesor…',
+  chat_cleared:     '**Conversación reiniciada.** Listo para el siguiente prospecto — ¿cuál es la pregunta?',
+  chat_err_generic: '**Lo siento — algo salió mal.**',
+  chat_err_network: '**Error de red.** No se pudo conectar con el servidor. Verifica tu conexión e inténtalo de nuevo.',
+}
+};
+
+// ── Core swap function ──────────────────────────────────────
+let currentLang = 'en';
+
+function applyLang(lang) {
+  const t = T[lang];
+  // Swap every element that has an id starting with "i-"
+  document.querySelectorAll('[id^="i-"]').forEach(el => {
+    const key = el.id.slice(2); // strip "i-"
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+  // If the Q&A detail panel is open, refresh its title from the active category.
+  const detail = document.getElementById('qa-detail');
+  const detailName = document.getElementById('qa-detail-name');
+  if (detail && !detail.hidden && detailName && detailName.dataset.cat) {
+    const meta = (typeof CAT_META !== 'undefined') && CAT_META[detailName.dataset.cat];
+    if (meta && t[meta.key]) detailName.innerHTML = t[meta.key];
+  }
+  // Update chat textarea placeholder (not an innerHTML target)
+  const ta = document.getElementById('chat-textarea');
+  if (ta && t.chat_placeholder) ta.placeholder = t.chat_placeholder;
+  // Notify other modules (chat.js) so they can localize dynamic strings
+  window.dispatchEvent(new CustomEvent('au:langchanged', { detail: { lang, t } }));
+}
+
+function setLang(lang, btn) {
+  if (lang === currentLang) return;
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyLang(lang);
+  gsap.fromTo('body', {opacity:0.82}, {opacity:1, duration:0.2, ease:'power2.out'});
+}
+
+// On load: populate Q&A cards and tags from English
+window.addEventListener('DOMContentLoaded', () => {
+  applyLang('en');
+});
+
+// ── Q&A accordion ───────────────────────────────────────────
+function toggleQA(card) {
+  const body = card.querySelector('.qa-body');
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.qa-card.open').forEach(c => {
+    c.classList.remove('open');
+    c.querySelector('.qa-body').classList.remove('open');
+  });
+  if (!isOpen) {
+    card.classList.add('open');
+    body.classList.add('open');
+    gsap.from(card.querySelector('.qa-a'), {opacity:0, y:-6, duration:0.25, ease:'power2.out'});
+    setTimeout(() => card.scrollIntoView({behavior:'smooth', block:'nearest'}), 80);
+  } else {
+    card.classList.remove('open');
+    body.classList.remove('open');
+  }
+}
+
+// ── Q&A category navigation ─────────────────────────────────
+const CAT_META = {
+  prog: { icon: '📍', key: 'cat_prog' },
+  job:  { icon: '💼', key: 'cat_job'  },
+  adm:  { icon: '🎓', key: 'cat_adm'  },
+  ai:   { icon: '🧠', key: 'cat_ai'   },
+  mia:  { icon: '🌴', key: 'cat_mia'  }
+};
+
+function pickCategory(cat) {
+  const picker = document.getElementById('cat-picker');
+  const detail = document.getElementById('qa-detail');
+  const meta = CAT_META[cat];
+  if (!meta) return;
+
+  document.getElementById('qa-detail-icon').textContent = meta.icon;
+  const t = T[currentLang] || {};
+  const nameEl = document.getElementById('qa-detail-name');
+  nameEl.dataset.cat = cat;
+  nameEl.innerHTML = t[meta.key] || meta.key;
+
+  // Show only this category's cards; collapse anything left open.
+  document.querySelectorAll('.qa-card').forEach(c => {
+    const show = c.dataset.cat === cat;
+    c.style.display = show ? '' : 'none';
+    if (c.classList.contains('open')) {
+      c.classList.remove('open');
+      c.querySelector('.qa-body').classList.remove('open');
+    }
+  });
+
+  picker.hidden = true;
+  detail.hidden = false;
+
+  gsap.fromTo('#qa-detail .qa-card:not([style*="display: none"])',
+    { opacity: 0, y: 10 },
+    { opacity: 1, y: 0, duration: 0.32, ease: 'power2.out', stagger: 0.05 });
+  gsap.fromTo('.qa-detail-head', { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' });
+
+  setTimeout(() => detail.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+}
+
+function backToCategories() {
+  const picker = document.getElementById('cat-picker');
+  const detail = document.getElementById('qa-detail');
+  detail.hidden = true;
+  picker.hidden = false;
+  gsap.fromTo('.cat-card',
+    { opacity: 0, y: 10 },
+    { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out', stagger: 0.04 });
+  setTimeout(() => picker.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
+}
+
+</script>
+</body>
+</html>
